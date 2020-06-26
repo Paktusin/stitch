@@ -36,7 +36,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({data, onChange}) => 
         onChange && onChange({
             ...data,
             zoom: {
-                scale: e.deltaY < 0 ? Math.min(6, scale * zoomSpeed) : Math.max(0.1, scale * (1 / zoomSpeed)),
+                scale: e.deltaY < 0 ? Math.min(5, scale * zoomSpeed) : Math.max(0.5, scale * (1 / zoomSpeed)),
                 wx: zoomedX_INV(e.x),
                 wy: zoomedY_INV(e.y),
                 sx: e.x,
