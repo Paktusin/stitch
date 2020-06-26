@@ -1,19 +1,22 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import './App.scss';
 import {Canvas} from "./Canvas/Canvas";
 import {Panel} from "./Panel/Panel";
-import {CanvasType} from "../models/canvasType";
+import {CanvasType} from "../types/canvas";
 
 function App() {
 
-    const data = useMemo(() => {
-        return {
-            backgroundColor: 'white',
-            stitches: [...Array(100)].map(row => [...Array(100)].map(_ => {
-                return {color: 'white', value: '▲'};
-            }))
-        } as CanvasType
-    }, []);
+    const [data, setData] = useState<CanvasType>({
+        zoom: {wx: 0, scale: 1, sx: 0, sy: 0, wy: 0},
+        backgroundColor: 'white',
+        stitches: [...Array(100)].map(() => [...Array(100)].map(() => {
+            return {color: 'white', value: '▲'};
+        }))
+    });
+
+    function changeHandler(data: CanvasType) {
+        setData(data);
+    }
 
     return (
         <div className="app">
@@ -21,7 +24,7 @@ function App() {
             <div className="mainArea">
                 <Panel vertical={true}/>
                 <div className="canvasContainer">
-                    <Canvas data={data}/>
+                    <Canvas data={data} onChange={changeHandler}/>
                 </div>
                 <Panel vertical={true}/>
             </div>
