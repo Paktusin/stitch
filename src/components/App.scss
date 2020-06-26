@@ -8,10 +8,13 @@
   .mainArea {
     display: flex;
     flex: 1 auto;
+    height: 1px;
 
     .canvasContainer {
       display: flex;
       flex: 1 auto;
+      width: 1px;
+      overflow: hidden;
     }
   }
 }
