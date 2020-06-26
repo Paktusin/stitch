@@ -1,0 +1,12 @@
+.Panel {
+  display: block;
+  height: 48px;
+  width: 100%;
+
+  &.vertical {
+    height: auto;
+    width: 48px;
+  }
+
+  background-color: #aaa;
+}
