@@ -20,7 +20,7 @@ export const drawService = {
         ctx.fillStyle = 'black';
         ctx.shadowBlur = 0;
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillText(stitch.value, zoomedX + (zoomedSize - fontSize) / 2 , zoomedY + (zoomedSize + fontSize/2) / 2)
+        ctx.fillText(stitch.value, zoomedX + (zoomedSize - fontSize) / 2, zoomedY + (zoomedSize + fontSize / 2) / 2)
     },
 
     drawGrid(ctx: CanvasRenderingContext2D, canvasData: CanvasType) {
@@ -30,6 +30,14 @@ export const drawService = {
                 this.drawStitch(ctx, stitch, colIndex * STITCH_SIZE, rowIndex * STITCH_SIZE, zoom);
             })
         });
+    },
+
+    drawGridDall(ctx: CanvasRenderingContext2D, canvasData: CanvasType) {
+        const {zoom} = canvasData;
+        const zoomedWidth = this.zoomed(canvasData.stitches[0].length * STITCH_SIZE, canvasData.zoom);
+        const zoomedHeight = this.zoomed(canvasData.stitches.length * STITCH_SIZE, canvasData.zoom);
+        ctx.fillStyle = '#eee';
+        ctx.fillRect(this.zoomedX(0, zoom), this.zoomedY(0, zoom), zoomedWidth, zoomedHeight)
     },
 
     zoomed(number: number, zoom: ZoomType) {

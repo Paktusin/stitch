@@ -24,7 +24,7 @@ function App() {
             <div className="mainArea">
                 <Panel vertical={true}/>
                 <div className="canvasContainer">
-                    <Canvas data={data} onChange={changeHandler}/>
+                    <Canvas canvasData={data} onChange={changeHandler}/>
                 </div>
                 <Panel vertical={true}/>
             </div>
