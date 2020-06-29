@@ -31,16 +31,4 @@ export class DbService {
         const db = await this.open();
         return db.transaction(name, 'readwrite').objectStore(name);
     }
-
-
-    list(name: string): Promise<any> {
-        return new Promise((res, rej) => {
-            this.open().then((db) => {
-                db.transaction(name)
-                    .objectStore(name)
-                    .getAll(name)
-                    .onsuccess = (event: any) => res(event.target.result)
-            })
-        })
-    }
 }
