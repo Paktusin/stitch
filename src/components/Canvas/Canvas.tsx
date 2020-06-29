@@ -27,10 +27,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, zoom}) => {
     function draw() {
         window.requestAnimationFrame(() => {
             const ctx = canvasRef.current.getContext('2d');
-            if (ctx) {
-                ctx.clearRect(0, 0, size.width, size.height);
-                drawService.drawGrid(ctx, grid, zoom);
-            }
+            drawService.drawAll(ctx, grid, zoom, size);
         })
     }
 
@@ -44,7 +41,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, zoom}) => {
 
     useEffect(() => {
         draw();
-    }, [grid, zoom]);
+    }, [grid, zoom, size]);
 
     useEffect(() => {
         window.addEventListener('resize', resize);

@@ -1,10 +1,10 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './Editor.scss';
 import {Project} from "../../types/project";
 import {Panel} from "../Panel/Panel";
 import {Canvas} from "../Canvas/Canvas";
 import {ZoomType} from "../../types/zoom";
-import {useParams} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
 import {projectService} from "../../services/dataService";
 
 function Editor() {
@@ -12,6 +12,7 @@ function Editor() {
     const [zoom, setZoom] = useState<ZoomType>({scale: 1, scrollY: 0, scrollX: 0})
     const canvasContainerRef = useRef<HTMLDivElement>(document.createElement('div'));
     const {id} = useParams();
+    const history = useHistory();
 
 
     function wheel(e: WheelEvent) {
@@ -27,7 +28,13 @@ function Editor() {
     }
 
     useEffect(() => {
-        projectService.get(id).then(setProject);
+        projectService.get(id).then(res => {
+            if (res) {
+                setProject(res)
+            } else {
+                history.push('/');
+            }
+        });
     }, [])
 
     useEffect(() => {
@@ -43,15 +50,14 @@ function Editor() {
 
     return (
         <div className="app">
-            <Panel/>
+            <Panel size={32}/>
             <div className="mainArea">
-                <Panel vertical={true}/>
+                <Panel size={64} vertical={true} border={"Right"}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
                     <Canvas zoom={zoom} grid={project.grid} onChange={setProject}/>
                 </div>
-                <Panel vertical={true}/>
+                <Panel size={128} vertical={true} border={"Left"}/>
             </div>
-            <Panel/>
         </div>
     );
 }

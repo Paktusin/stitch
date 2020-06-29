@@ -13,10 +13,12 @@ export function Home() {
 
     return (
         <div>
-            <Link to={'/edit'} >new</Link>
+            <Link to={'/edit'}>new</Link>
             Recent projects:
             <ul>
-                {projects.map(project => <li>{project.name}</li>)}
+                {projects.map(project => <Link to={`/draw/${project.id}`}>
+                    <li>{project.name}</li>
+                </Link>)}
             </ul>
         </div>
     )

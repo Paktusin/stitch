@@ -1,7 +1,6 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useParams, useHistory, Link} from 'react-router-dom';
 import {Project} from "../../types/project";
-import {Cell} from "../../types/cell";
 import {projectService} from "../../services/dataService";
 
 export const ProjectEdit: FunctionComponent = () => {
@@ -18,7 +17,7 @@ export const ProjectEdit: FunctionComponent = () => {
         const oldGrid = project.grid;
         project.grid = [...Array(size.height)].map((_, rowIndex) => {
             return [...Array(size.width)].map((_, cellIndex) => {
-                return (oldGrid[rowIndex] && oldGrid[rowIndex][cellIndex]) || new Cell();
+                return (oldGrid[rowIndex] && oldGrid[rowIndex][cellIndex])  ;
             });
         })
     }
