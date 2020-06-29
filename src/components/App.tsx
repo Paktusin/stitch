@@ -5,24 +5,27 @@ import {
     Route
 } from "react-router-dom";
 import {ProjectEdit} from "./ProjectEdit/ProjectEdit";
-import Editor from "./Editor/Editor";
 import {Home} from "./Home/Home";
+import {Editor} from "./Editor/Editor";
+import {Store} from "./Store";
 
 
 export const App = () => {
     return (
-        <Router>
-            <Switch>
-                <Route exact path="/" >
-                    <Home/>
-                </Route>
-                <Route path="/edit/:id?" >
-                    <ProjectEdit/>
-                </Route>
-                <Route exact path="/draw/:id" >
-                    <Editor/>
-                </Route>
-            </Switch>
-        </Router>
+        <Store>
+            <Router>
+                <Switch>
+                    <Route exact path="/">
+                        <Home/>
+                    </Route>
+                    <Route path="/edit/:id?">
+                        <ProjectEdit/>
+                    </Route>
+                    <Route exact path="/draw/:id">
+                        <Editor/>
+                    </Route>
+                </Switch>
+            </Router>
+        </Store>
     )
 }

@@ -1,0 +1,16 @@
+.zoomLabel {
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  text-align: center;
+  height: 64px;
+  border-radius: 100%;
+  opacity: 0;
+  transition: opacity 1s ease;
+
+  &.active {
+    opacity: 1;
+  }
+}
