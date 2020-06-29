@@ -1,11 +1,11 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import {Project} from "../../types/project";
-import {projectService} from "../../services/projectService";
+import {projectService} from "../../services/dataService";
 
 export const ProjectEdit: FunctionComponent = () => {
     const {id} = useParams();
-    const [project, setProject] = useState<Project>(projectService.getProject(id));
+    const [project, setProject] = useState<Project>(new Project());
     const [size, setSize] = useState<{ height: number, width: number }>({height: 100, width: 100})
     const history = useHistory();
 
@@ -13,8 +13,9 @@ export const ProjectEdit: FunctionComponent = () => {
         setProject({...project, [prop]: value})
     }
 
+
     function save() {
-        const {id} = projectService.saveProject(project);
+        // const {id} = projectService.saveProject(project);
         goToEditor(id as string);
     }
 

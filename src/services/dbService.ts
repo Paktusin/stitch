@@ -1,9 +1,8 @@
 export class DbService {
 
     idbFactory: IDBFactory;
-    db: IDBDatabase = new IDBDatabase();
 
-    constructor(private name: string) {
+    constructor(private name: string, private schema: string[], private version: number) {
         // @ts-ignore
         this.idbFactory = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
         if (!this.idbFactory) {
@@ -11,26 +10,37 @@ export class DbService {
         }
     }
 
-    init(): Promise<any> {
+    open(): Promise<IDBDatabase> {
         return new Promise((resolve, reject) => {
-            const request = this.idbFactory.open('stitch');
+            const request = this.idbFactory.open(this.name, this.version);
             request.onerror = () => new Error('You need to allow database');
+            request.onsuccess = (event: any) => {
+                resolve(event.target.result);
+            }
             request.onupgradeneeded = (event: any) => {
-                this.db = event.target.result as IDBDatabase;
+                console.log('onupgradeneeded');
+                const db = event.target.result;
+                this.schema.forEach(table => {
+                    db.createObjectStore(table, {keyPath: 'id'})
+                })
             }
         })
     }
+
+    async store(name: string): Promise<IDBObjectStore> {
+        const db = await this.open();
+        return db.transaction(name, 'readwrite').objectStore(name);
+    }
+
 
     list(name: string): Promise<any> {
-        return new Promise(resolve => {
-            const request = this.db.transaction(name, "readwrite").objectStore("name").getAll()
-            request.onsuccess = () => {
-                resolve(request.result);
-            }
+        return new Promise((res, rej) => {
+            this.open().then((db) => {
+                db.transaction(name)
+                    .objectStore(name)
+                    .getAll(name)
+                    .onsuccess = (event: any) => res(event.target.result)
+            })
         })
-    }
-
-    async createStorage(name: string) {
-        this.db?.createObjectStore(name);
     }
 }
