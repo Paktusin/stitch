@@ -1,36 +1,28 @@
-import React, {useMemo, useState} from 'react';
-import './App.scss';
-import {Canvas} from "./Canvas/Canvas";
-import {Panel} from "./Panel/Panel";
-import {CanvasType} from "../types/canvas";
+import React from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from "react-router-dom";
+import {ProjectEdit} from "./ProjectEdit/ProjectEdit";
+import Editor from "./Editor/Editor";
+import {Home} from "./Home/Home";
 
-function App() {
 
-    const [data, setData] = useState<CanvasType>({
-        zoom: {wx: 0, scale: 1, sx: 0, sy: 0, wy: 0},
-        backgroundColor: 'white',
-        stitches: [...Array(100)].map(() => [...Array(100)].map(() => {
-            return {color: 'white', value: '▲'};
-        }))
-    });
-
-    function changeHandler(data: CanvasType) {
-        setData(data);
-    }
-
+export const App = () => {
     return (
-        <div className="app">
-            <Panel/>
-            <div className="mainArea">
-                <Panel vertical={true}/>
-                <div className="canvasContainer">
-                    <Canvas canvasData={data} onChange={changeHandler}/>
-                </div>
-                <Panel vertical={true}/>
-            </div>
-            <Panel/>
-        </div>
-    );
+        <Router>
+            <Switch>
+                <Route path="/" >
+                    <Home/>
+                </Route>
+                <Route exact path="/edit/:id" >
+                    <ProjectEdit/>
+                </Route>
+                <Route exact path="/:id" >
+                    <Editor/>
+                </Route>
+            </Switch>
+        </Router>
+    )
 }
-
-export default App;

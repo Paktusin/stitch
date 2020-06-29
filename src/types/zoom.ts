@@ -1,7 +1,5 @@
 export interface ZoomType {
     scale: number;
-    wx: number;
-    wy: number;
-    sx: number;
-    sy: number;
+    scrollX: number,
+    scrollY: number,
 }
