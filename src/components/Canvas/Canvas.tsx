@@ -42,7 +42,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({canvasData, zoom}) =
     }, []);
 
     useEffect(() => {
-        console.log(canvasData);
         draw();
     }, [canvasData]);
 

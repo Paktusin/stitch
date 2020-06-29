@@ -5,13 +5,13 @@ import {ZoomType} from "../types/zoom";
 const STITCH_SIZE = 8;
 
 export const drawService = {
-    drawStitch(ctx: CanvasRenderingContext2D, stitch: Cell, x: number, y: number, zoom: ZoomType) {
+    drawCell(ctx: CanvasRenderingContext2D, stitch: Cell, x: number, y: number, zoom: ZoomType) {
         const zoomedSize = this.zoomed(STITCH_SIZE, zoom);
         const zoomedX = this.zoomedX(x, zoom)
         const zoomedY = this.zoomedY(y, zoom)
         const fontSize = zoomedSize / 2;
 
-        ctx.fillStyle = stitch.color;
+        ctx.fillStyle = stitch.color || 'white';
         ctx.shadowBlur = 3 * zoom.scale
         ctx.shadowColor = "#666";
         ctx.fillRect(zoomedX, zoomedY, zoomedSize, zoomedSize);
@@ -24,10 +24,10 @@ export const drawService = {
     },
 
     drawGrid(ctx: CanvasRenderingContext2D, canvasData: Project, zoom: ZoomType) {
-        const {stitches} = canvasData;
-        stitches.forEach((stitchArray, rowIndex) => {
+        const {grid} = canvasData;
+        grid.forEach((stitchArray, rowIndex) => {
             stitchArray.forEach((stitch, colIndex) => {
-                this.drawStitch(ctx, stitch, colIndex * STITCH_SIZE, rowIndex * STITCH_SIZE, zoom);
+                this.drawCell(ctx, stitch, colIndex * STITCH_SIZE, rowIndex * STITCH_SIZE, zoom);
             })
         });
     },

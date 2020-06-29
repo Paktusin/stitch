@@ -5,7 +5,7 @@ export class Project extends Entity {
     name: string;
     createdAt: number;
     updatedAt: number;
-    stitches: Cell[][] = [];
+    grid: Cell[][] = [];
 
     constructor() {
         super();

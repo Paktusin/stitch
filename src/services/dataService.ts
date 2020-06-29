@@ -20,14 +20,14 @@ export class DataService<T extends Entity> {
     }
 
     async get(id: string): Promise<T> {
-        return this.request((store) => store.get(id))
+        return this.request<T>((store) => store.get(id))
     }
 
-    async save(entity: T): Promise<T> {
-        if (entity.id) {
+    async save(entity: T): Promise<string> {
+        if (!entity.id) {
             entity.id = uuid();
         }
-        return this.request((store) => store.put(entity, entity.id))
+        return this.request((store) => store.put(entity))
     }
 
     async delete(entity: T): Promise<T> {
@@ -36,7 +36,7 @@ export class DataService<T extends Entity> {
 
     async list(): Promise<T[]> {
         return this.request<T[]>((store) => store.getAll()).then(res => res.map(entity => {
-            return new this.className()
+            return (new this.className()).import(entity)
         }))
     }
 

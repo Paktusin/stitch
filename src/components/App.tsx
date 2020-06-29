@@ -13,13 +13,13 @@ export const App = () => {
     return (
         <Router>
             <Switch>
-                <Route path="/" >
+                <Route exact path="/" >
                     <Home/>
                 </Route>
-                <Route exact path="/edit/:id" >
+                <Route path="/edit/:id?" >
                     <ProjectEdit/>
                 </Route>
-                <Route exact path="/:id" >
+                <Route exact path="/draw/:id" >
                     <Editor/>
                 </Route>
             </Switch>

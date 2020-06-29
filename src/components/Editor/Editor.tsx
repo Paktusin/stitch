@@ -4,15 +4,14 @@ import {Project} from "../../types/project";
 import {Panel} from "../Panel/Panel";
 import {Canvas} from "../Canvas/Canvas";
 import {ZoomType} from "../../types/zoom";
+import {useParams} from "react-router-dom";
+import {projectService} from "../../services/dataService";
 
 function Editor() {
-    const [data, setData] = useState<Project>(new Project());
+    const [project, setProject] = useState<Project>();
     const [zoom, setZoom] = useState<ZoomType>({scale: 1, scrollY: 0, scrollX: 0})
     const canvasContainerRef = useRef<HTMLDivElement>(document.createElement('div'));
-
-    function changeHandler(data: Project) {
-        setData(data);
-    }
+    const {id} = useParams();
 
 
     function wheel(e: WheelEvent) {
@@ -28,11 +27,19 @@ function Editor() {
     }
 
     useEffect(() => {
+        projectService.get(id).then(setProject);
+    }, [])
+
+    useEffect(() => {
         canvasContainerRef.current.addEventListener('wheel', wheel);
         return () => {
             canvasContainerRef.current.removeEventListener('wheel', wheel);
         }
-    }, [data]);
+    }, [project]);
+
+    if (!project) {
+        return null;
+    }
 
     return (
         <div className="app">
@@ -40,7 +47,7 @@ function Editor() {
             <div className="mainArea">
                 <Panel vertical={true}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
-                    <Canvas zoom={zoom} canvasData={data} onChange={changeHandler}/>
+                    <Canvas zoom={zoom} canvasData={project} onChange={setProject}/>
                 </div>
                 <Panel vertical={true}/>
             </div>

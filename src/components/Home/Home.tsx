@@ -1,15 +1,23 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {projectService} from "../../services/dataService";
+import {Project} from "../../types/project";
+import {Link} from "react-router-dom";
 
 export function Home() {
 
+    const [projects, setProjects] = useState<Project[]>([]);
+
     useEffect(() => {
-        projectService.list().then(res => console.log(res))
+        projectService.list().then(setProjects)
     }, [])
 
     return (
         <div>
-            Home
+            <Link to={'/edit'} >new</Link>
+            Recent projects:
+            <ul>
+                {projects.map(project => <li>{project.name}</li>)}
+            </ul>
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import React, {FunctionComponent, useState} from 'react';
-import {useParams, useHistory} from 'react-router-dom';
+import {useParams, useHistory, Link} from 'react-router-dom';
 import {Project} from "../../types/project";
+import {Cell} from "../../types/cell";
 import {projectService} from "../../services/dataService";
 
 export const ProjectEdit: FunctionComponent = () => {
@@ -10,17 +11,23 @@ export const ProjectEdit: FunctionComponent = () => {
     const history = useHistory();
 
     function onChangeHandler(prop: string, value: string) {
-        setProject({...project, [prop]: value})
+        setProject({...project, [prop]: value} as Project)
     }
 
+    function changeSize() {
+        const oldGrid = project.grid;
+        project.grid = [...Array(size.height)].map((_, rowIndex) => {
+            return [...Array(size.width)].map((_, cellIndex) => {
+                return (oldGrid[rowIndex] && oldGrid[rowIndex][cellIndex]) || new Cell();
+            });
+        })
+    }
 
     function save() {
-        // const {id} = projectService.saveProject(project);
-        goToEditor(id as string);
-    }
-
-    function goToEditor(id?: string) {
-        if (id) history.push('/' + id);
+        changeSize();
+        projectService.save(project).then(id => {
+            history.push(`/draw/${id}`)
+        })
     }
 
     return (
@@ -41,7 +48,7 @@ export const ProjectEdit: FunctionComponent = () => {
             </div>
 
             <button onClick={e => save()}>{project.id ? 'Save' : 'Create'}</button>
-            {project.id && <button onClick={e => goToEditor(project.id)}>Cancel</button>}
+            <Link to={'/' + (project.id ? `draw/${project.id}` : '')}>Cancel</Link>
         </div>
     )
 }
