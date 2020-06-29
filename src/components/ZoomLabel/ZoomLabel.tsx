@@ -9,6 +9,7 @@ export const ZoomLabel = () => {
     const label = ((zoom.scale - zoomSettings.min) * 100 / (1 - zoomSettings.min)).toFixed(0) + '%'
     const [active, setActive] = useState();
     useEffect(() => {
+        clearTimeout(active);
         setActive(setTimeout(() => setActive(null), 1000));
     }, [zoom.scale])
 

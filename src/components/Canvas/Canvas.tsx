@@ -58,7 +58,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - 0.7) / 2})`;
         const strokeStyleBold = `rgba(0,0,0,${zoom.scale / 2})`;
-
         while (i <= size.height / cellSize) {
             ctx.lineWidth = zoom.scale - 0.7;
             ctx.lineWidth = i % 5 ? 1 : 2;
@@ -110,8 +109,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
     }, []);
 
     useEffect(() => {
-        // drawAll();
-    }, [grid, size]);
+        drawAll();
+    }, [grid, size, zoom]);
 
     useEffect(() => {
         window.addEventListener('resize', resize);
