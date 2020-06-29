@@ -3,14 +3,15 @@ import './Canvas.scss';
 import {Project} from "../../types/project";
 import {drawService} from "../../services/drawService";
 import {ZoomType} from "../../types/zoom";
+import {Cell} from "../../types/cell";
 
 export interface CanvasPropsType {
-    canvasData: Project;
+    grid: Cell[][];
     zoom: ZoomType;
     onChange?: (canvas: Project) => void
 }
 
-export const Canvas: FunctionComponent<CanvasPropsType> = ({canvasData, zoom}) => {
+export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, zoom}) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
@@ -28,7 +29,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({canvasData, zoom}) =
             const ctx = canvasRef.current.getContext('2d');
             if (ctx) {
                 ctx.clearRect(0, 0, size.width, size.height);
-                drawService.drawGrid(ctx, canvasData, zoom);
+                drawService.drawGrid(ctx, grid, zoom);
             }
         })
     }
@@ -43,14 +44,14 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({canvasData, zoom}) =
 
     useEffect(() => {
         draw();
-    }, [canvasData]);
+    }, [grid, zoom]);
 
     useEffect(() => {
         window.addEventListener('resize', resize);
         return () => {
             window.removeEventListener('resize', resize);
         }
-    }, [canvasData]);
+    }, [grid]);
 
     return (
         <canvas onContextMenu={contextHandler}

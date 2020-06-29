@@ -23,8 +23,7 @@ export const drawService = {
         // ctx.fillText(stitch.value, zoomedX + (zoomedSize - fontSize) / 2, zoomedY + (zoomedSize + fontSize / 2) / 2)
     },
 
-    drawGrid(ctx: CanvasRenderingContext2D, canvasData: Project, zoom: ZoomType) {
-        const {grid} = canvasData;
+    drawGrid(ctx: CanvasRenderingContext2D, grid: Cell[][], zoom: ZoomType) {
         grid.forEach((stitchArray, rowIndex) => {
             stitchArray.forEach((stitch, colIndex) => {
                 this.drawCell(ctx, stitch, colIndex * STITCH_SIZE, rowIndex * STITCH_SIZE, zoom);

@@ -35,7 +35,7 @@ function Editor() {
         return () => {
             canvasContainerRef.current.removeEventListener('wheel', wheel);
         }
-    }, [project]);
+    }, [zoom, project]);
 
     if (!project) {
         return null;
@@ -47,7 +47,7 @@ function Editor() {
             <div className="mainArea">
                 <Panel vertical={true}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
-                    <Canvas zoom={zoom} canvasData={project} onChange={setProject}/>
+                    <Canvas zoom={zoom} grid={project.grid} onChange={setProject}/>
                 </div>
                 <Panel vertical={true}/>
             </div>
