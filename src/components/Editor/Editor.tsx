@@ -8,6 +8,7 @@ import {projectService} from "../../services/dataService";
 import {StateContext, DispatchContext, Store} from "../Store";
 import {ZoomLabel} from "../ZoomLabel/ZoomLabel";
 import {zoomSettings} from "../../types/zoom";
+import {RightPanel} from "../RightPanel/RightPanel";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
@@ -58,7 +59,8 @@ export const Editor = () => {
                     <ZoomLabel/>
                     <Canvas grid={project.grid} onChange={setProject}/>
                 </div>
-                <Panel size={128} vertical={true} border={"Left"}/>
+                <RightPanel palette={project.palette}
+                            onChange={palette => setProject({...project, palette} as Project)}/>
             </div>
         </div>
     );

@@ -31,6 +31,10 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
         const zoomedSize = zoomed(CELL_SIZE);
         const zX = zoomedX(x);
         const zY = zoomedY(y);
+        if (zX > size.width || zY > size.height) {
+            console.log('big')
+            return;
+        }
         const fontSize = zoomedSize / 2;
 
         ctx.fillStyle = stitch.color;
@@ -46,35 +50,35 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
     function drawCells(ctx: CanvasRenderingContext2D) {
         grid.forEach((cells, rowIndex) => {
             cells.forEach((cell, colIndex) => {
-                if (cell)
-                    drawCell(ctx, cell, colIndex * CELL_SIZE, rowIndex * CELL_SIZE);
+                if (cell) drawCell(ctx, cell, colIndex * CELL_SIZE, rowIndex * CELL_SIZE);
             })
         });
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
         const cellSize = zoomed(CELL_SIZE);
+        const height = Math.min(size.height, grid.length * cellSize);
+        const width = Math.min(size.width, grid[0].length * cellSize);
         let i = 0;
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - 0.7) / 2})`;
         const strokeStyleBold = `rgba(0,0,0,${zoom.scale / 2})`;
-        while (i <= size.height / cellSize) {
+        while (i <= height / cellSize) {
             ctx.lineWidth = zoom.scale - 0.7;
             ctx.lineWidth = i % 5 ? 1 : 2;
             ctx.strokeStyle = i % 5 ? strokeStyle : strokeStyleBold;
             ctx.beginPath();
             ctx.moveTo(0, i * cellSize);
-            ctx.lineTo(size.width, i * cellSize);
+            ctx.lineTo(width, i * cellSize);
             ctx.stroke();
             i++;
         }
-
-        while (j <= size.width / cellSize) {
+        while (j <= width / cellSize) {
             ctx.lineWidth = j % 5 ? 1 : 2;
             ctx.strokeStyle = j % 5 ? strokeStyle : strokeStyleBold;
             ctx.beginPath();
             ctx.moveTo(j * cellSize, 0);
-            ctx.lineTo(j * cellSize, size.height);
+            ctx.lineTo(j * cellSize, height);
             ctx.stroke();
             j++;
         }
@@ -109,7 +113,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
     }, []);
 
     useEffect(() => {
-        drawAll();
+        if (grid.length > 0) drawAll();
     }, [grid, size, zoom]);
 
     useEffect(() => {
