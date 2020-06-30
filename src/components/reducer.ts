@@ -14,6 +14,8 @@ export function mainReducer(state: StoreType, action: { type: string, value: any
     switch (action.type) {
         case actionTypes.SET_ZOOM:
             return {...state, zoom: action.value};
+        case actionTypes.SET_PALETTE_ITEM:
+            return {...state, paletteItem: action.value};
         default:
             return state;
     }

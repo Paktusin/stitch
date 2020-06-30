@@ -5,11 +5,15 @@
   .colorBox {
     box-sizing: border-box;
     cursor: pointer;
-    height: 16px;
-    width: 16px;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
 
     &.selected {
-      border: 2px solid magenta;
+      border: 2px dotted white;
     }
   }
 }
