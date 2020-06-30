@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext, useState} from "react";
+import React, {FunctionComponent, useContext, useMemo, useState} from "react";
 import {Panel} from "../Panel/Panel";
 import {PanelButton} from "../PanleButton/PanelButton";
 import {Palette} from "../Palette/Palette";
@@ -15,6 +15,8 @@ export interface RightPanelType {
 export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onChange}) => {
     const [modalOpened, setModalOpened] = useState(false);
     const [editIndex, setEditIndex] = useState<number>();
+    const {setPaletteItem} = useContext(DispatchContext);
+    const {paletteItem} = useContext(StateContext);
 
     function saveHandler(paletteItem?: PaletteType) {
         if (paletteItem) {
@@ -34,12 +36,12 @@ export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onC
         setModalOpened(true);
     }
 
-    const editPaletteItem = palette[editIndex || -1];
+    const editPaletteItem = useMemo(() => palette[editIndex !== undefined ? editIndex : -1], [editIndex, palette]);
 
     return (
         <Panel size={128} vertical={true} border={"Left"}>
             <PanelButton onClick={e => editHandler()}>+</PanelButton>
-            <Palette palette={palette} onClick={editHandler}/>
+            <Palette selected={paletteItem} palette={palette} onClick={setPaletteItem} onDoubleClick={editHandler}/>
             <Modal opened={modalOpened} onBackDrop={() => setModalOpened(false)}>
                 <PaletteEdit paletteItem={editPaletteItem} onSave={saveHandler}/>
             </Modal>

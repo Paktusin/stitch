@@ -1,8 +1,15 @@
 .Palette {
-
+  display: flex;
+  flex-wrap: wrap;
 
   .colorBox {
-    height: 32px;
-    width: 32px;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+
+    &.selected {
+      border: 2px solid magenta;
+    }
   }
 }

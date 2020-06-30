@@ -32,7 +32,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
         const zX = zoomedX(x);
         const zY = zoomedY(y);
         if (zX > size.width || zY > size.height) {
-            console.log('big')
             return;
         }
         const fontSize = zoomedSize / 2;

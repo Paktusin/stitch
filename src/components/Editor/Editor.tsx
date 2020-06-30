@@ -46,6 +46,10 @@ export const Editor = () => {
         }
     }, [zoom, project]);
 
+    useEffect(() => {
+        if (project) projectService.save(project).then(() => console.log('saved'))
+    }, [project])
+
     if (!project) {
         return null;
     }
@@ -59,8 +63,7 @@ export const Editor = () => {
                     <ZoomLabel/>
                     <Canvas grid={project.grid} onChange={setProject}/>
                 </div>
-                <RightPanel palette={project.palette}
-                            onChange={palette => setProject({...project, palette} as Project)}/>
+                <RightPanel palette={project.palette} onChange={palette => setProject({...project, palette} as Project)}/>
             </div>
         </div>
     );
