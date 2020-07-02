@@ -4,4 +4,4 @@ export interface Zoom {
     scrollY: number,
 }
 
-export const zoomSettings = {max: 5, min: 0.5, speed: 1.17};
+export const zoomSettings = {max: 7, min: 0.5, speed: 1.17};

@@ -1,17 +1,17 @@
 import React, {FunctionComponent, useContext, useEffect, useRef, useState} from "react";
 import './Canvas.scss';
-import {Project} from "../../types/project";
 import {Cell} from "../../types/cell";
 import {StateContext} from "../Store";
+import {Direction} from "../../types/stitch";
 
 export interface CanvasPropsType {
-    grid: (Cell| undefined)[][];
-    onChange?: (canvas: Project) => void
+    grid: (Cell | undefined)[][];
+    onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction) => void
 }
 
 const CELL_SIZE = 4;
 
-export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
+export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) => {
     const {zoom} = useContext(StateContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
@@ -25,6 +25,18 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
 
     function contextHandler(e: any) {
         e.preventDefault();
+    }
+
+    function clickHandler(event: React.MouseEvent<HTMLCanvasElement>) {
+        const refRect = ref.current.getBoundingClientRect();
+        const zoomedSize = zoomed(CELL_SIZE);
+        const cellX = (event.pageX - refRect.left) / zoomedSize
+        const rowY = (event.pageY - refRect.top) / zoomedSize
+        const cellIndex = Math.floor(cellX);
+        const rowIndex = Math.floor(rowY);
+        const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
+        console.log('click', rowIndex, cellIndex, direction);
+        onCellClick && onCellClick(rowIndex, cellIndex, direction)
     }
 
     function drawCell(ctx: CanvasRenderingContext2D, stitch: Cell, x: number, y: number) {
@@ -124,6 +136,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
 
     return (
         <canvas onContextMenu={contextHandler}
+                onClick={clickHandler}
                 height={size.height}
                 width={size.width}
                 ref={ref}

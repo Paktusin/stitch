@@ -11,6 +11,8 @@ import {zoomSettings} from "../../types/zoom";
 import {RightPanel} from "../RightPanel/RightPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
 import {PaletteType} from "../../types/paletteType";
+import {Cell} from "../../types/cell";
+import {Direction} from "../../types/stitch";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
@@ -45,6 +47,10 @@ export const Editor = () => {
         }
     }
 
+    function cellClickHandler(rowIndex: number, cellIndex: number, direction: Direction) {
+        console.log(rowIndex, cellIndex, direction)
+    }
+
     useEffect(() => {
         projectService.get(id).then(res => {
             if (res) {
@@ -77,7 +83,7 @@ export const Editor = () => {
                 <Panel size={64} vertical={true} border={"Right"}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
                     <ZoomLabel/>
-                    <Canvas grid={project.grid} onChange={setProject}/>
+                    <Canvas grid={project.grid} onCellClick={cellClickHandler}/>
                 </div>
                 <RightPanel palette={project.palette}
                             onChange={palette => setProject({...project, palette} as Project)}
