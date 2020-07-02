@@ -21,7 +21,10 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const {zoom, view} = useContext(StoreContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
-    const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale])
+
+    const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale]);
+    // const scrollX = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale]);
+
     const cellSize = useMemo(() => zoomed(CELL_SIZE), [zoomed]);
     const height = useMemo(() => Math.min(size.height, project.height * cellSize), [size, project.height, cellSize]);
     const width = useMemo(() => Math.min(size.width, project.width * cellSize), [size, project.height, cellSize]);
@@ -82,7 +85,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         ctx.fillRect(0, 0, width, height);
 
         if (view === 'aida' || view === 'count') {
-
             let i = 0;
             while (i <= height / cellSize) {
                 let j = 0;

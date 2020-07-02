@@ -6,14 +6,16 @@ import './ZoomLabel.scss'
 
 export const ZoomLabel = () => {
     const {zoom} = useContext(StoreContext);
-    const label = ((zoom.scale - zoomSettings.min) * 100 / (1 - zoomSettings.min)).toFixed(0) + '%'
+    const label = (zoom.scale * 100 / zoomSettings.min).toFixed(0) + '%'
     const [active, setActive] = useState();
     useEffect(() => {
         clearTimeout(active);
         setActive(setTimeout(() => setActive(null), 1000));
-    }, [zoom.scale])
+    }, [zoom])
 
     return (
-        <div className={cls('zoomLabel', {active: !!active})}>{label}</div>
+        <div className={cls('zoomLabel', {active: !!active})}>
+            {label} | {zoom.scrollY} | {zoom.scrollX}
+        </div>
     )
 }

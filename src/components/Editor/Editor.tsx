@@ -22,13 +22,22 @@ export const Editor = () => {
     const {setZoom} = useContext(DispatchContext);
 
     function wheel(e: WheelEvent) {
-        const {scale} = zoom;
-        const newScale = (e.deltaY < 0 ? Math.min(zoomSettings.max, scale * zoomSettings.speed) : Math.max(zoomSettings.min, scale * (1 / zoomSettings.speed)));
-        if (newScale !== scale) {
-            setZoom({
-                ...zoom,
-                scale: newScale,
-            });
+        if (e.altKey) {
+            const {scale} = zoom;
+            const newScale = (e.deltaY < 0 ? Math.min(zoomSettings.max, scale * zoomSettings.speed) : Math.max(zoomSettings.min, scale * (1 / zoomSettings.speed)));
+            if (newScale !== scale) {
+                setZoom({
+                    ...zoom,
+                    scale: newScale,
+                });
+            }
+        } else {
+            if (project) {
+                const scrollY = zoom.scrollY + e.deltaY / 20;
+                if (0 <= scrollY && scrollY <= project.height) {
+                    setZoom({...zoom, scrollY})
+                }
+            }
         }
     }
 
