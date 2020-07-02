@@ -4,6 +4,6 @@ import {SymbolType} from "./symbol";
 
 export type Cell = {
     thread: Thread;
-    value: Stitch;
+    stitch: Stitch;
     symbol: SymbolType;
 }

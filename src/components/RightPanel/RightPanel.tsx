@@ -48,10 +48,10 @@ export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onC
     const editPaletteItem = useMemo(() => palette[editIndex !== undefined ? editIndex : -1], [editIndex, palette]);
 
     useEffect(() => {
-        if (palette.length) {
+        if (palette.length && !paletteItem) {
             setPaletteItem(palette[0])
         }
-    }, [])
+    }, [palette])
 
     return (
         <Panel size={128} vertical={true} border={"Left"}>

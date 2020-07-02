@@ -1,12 +1,14 @@
-import React, {FunctionComponent, useContext, useEffect, useRef, useState} from "react";
+import React, {FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import './Canvas.scss';
 import {Cell} from "../../types/cell";
 import {StateContext} from "../Store";
 import {Direction} from "../../types/stitch";
+import {zoomSettings} from "../../types/zoom";
+import {colorService} from "../../services/colorService";
 
 export interface CanvasPropsType {
     grid: (Cell | undefined)[][];
-    onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction) => void
+    onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void
 }
 
 const CELL_SIZE = 4;
@@ -15,6 +17,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
     const {zoom} = useContext(StateContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
+    const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale])
+    const cellSize = useMemo(() => zoomed(CELL_SIZE), [zoomed]);
 
     function resize() {
         const parent = ref.current.parentElement;
@@ -23,39 +27,35 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
         }
     }
 
-    function contextHandler(e: any) {
-        e.preventDefault();
-    }
-
-    function clickHandler(event: React.MouseEvent<HTMLCanvasElement>) {
+    function clickHandler(event: React.MouseEvent<HTMLCanvasElement>, contextMenu = false) {
+        event.preventDefault();
         const refRect = ref.current.getBoundingClientRect();
-        const zoomedSize = zoomed(CELL_SIZE);
-        const cellX = (event.pageX - refRect.left) / zoomedSize
-        const rowY = (event.pageY - refRect.top) / zoomedSize
+        const cellX = (event.pageX - refRect.left) / cellSize
+        const rowY = (event.pageY - refRect.top) / cellSize
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-        console.log('click', rowIndex, cellIndex, direction);
-        onCellClick && onCellClick(rowIndex, cellIndex, direction)
+        if (rowIndex <= grid.length && grid.length > 1 && cellIndex <= grid[0].length) {
+            onCellClick && onCellClick(rowIndex, cellIndex, direction, contextMenu)
+        }
     }
 
     function drawCell(ctx: CanvasRenderingContext2D, stitch: Cell, x: number, y: number) {
-        const zoomedSize = zoomed(CELL_SIZE);
-        const zX = zoomedX(x);
-        const zY = zoomedY(y);
+        const zX = zoomed(x);
+        const zY = zoomed(y);
         if (zX > size.width || zY > size.height) {
             return;
         }
-        const fontSize = zoomedSize / 2;
+        const fontSize = cellSize / 2;
 
         ctx.fillStyle = stitch.thread.color;
-        ctx.fillRect(zX, zY, zoomedSize, zoomedSize);
+        ctx.fillRect(zX, zY, cellSize, cellSize);
 
 
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = colorService.strRgbContrast(stitch.thread.color);
         ctx.shadowBlur = 0;
         ctx.font = `${fontSize}px Arial`;
-        // ctx.fillText(stitch.value, zoomedX + (zoomedSize - fontSize) / 2, zoomedY + (zoomedSize + fontSize / 2) / 2)
+        ctx.fillText(stitch.symbol, zX + (cellSize - fontSize) / 2, zY + (cellSize + fontSize / 2) / 2)
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {
@@ -67,15 +67,14 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
-        const cellSize = zoomed(CELL_SIZE);
-        const height = Math.min(size.height, grid.length * cellSize);
-        const width = Math.min(size.width, grid[0].length * cellSize);
+        const height = grid.length * cellSize;
+        const width = grid[0].length * cellSize;
         let i = 0;
         let j = 0;
-        const strokeStyle = `rgba(0,0,0,${(zoom.scale - 0.7) / 2})`;
+        const strokeStyle = `rgba(0,0,0,${(zoom.scale - zoomSettings.min) / 2})`;
         const strokeStyleBold = `rgba(0,0,0,${zoom.scale / 2})`;
         while (i <= height / cellSize) {
-            ctx.lineWidth = zoom.scale - 0.7;
+            ctx.lineWidth = zoom.scale - zoomSettings.min;
             ctx.lineWidth = i % 5 ? 1 : 2;
             ctx.strokeStyle = i % 5 ? strokeStyle : strokeStyleBold;
             ctx.beginPath();
@@ -93,18 +92,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
             ctx.stroke();
             j++;
         }
-    }
-
-    function zoomed(number: number) {
-        return Math.floor(number * zoom.scale);
-    }
-
-    function zoomedX(number: number) {
-        return Math.floor((number) * zoom.scale);
-    }
-
-    function zoomedY(number: number) {
-        return Math.floor((number) * zoom.scale);
     }
 
     function drawAll() {
@@ -135,7 +122,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
     }, [grid]);
 
     return (
-        <canvas onContextMenu={contextHandler}
+        <canvas onContextMenu={e => clickHandler(e, true)}
                 onClick={clickHandler}
                 height={size.height}
                 width={size.width}

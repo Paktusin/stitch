@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import './Editor.scss';
 import {Project} from "../../types/project";
 import {Panel} from "../Panel/Panel";
@@ -11,15 +11,14 @@ import {zoomSettings} from "../../types/zoom";
 import {RightPanel} from "../RightPanel/RightPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
 import {PaletteType} from "../../types/paletteType";
-import {Cell} from "../../types/cell";
-import {Direction} from "../../types/stitch";
+import {Direction, Stitch} from "../../types/stitch";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
     const canvasContainerRef = useRef<HTMLDivElement>(document.createElement('div'));
     const {id} = useParams();
     const history = useHistory();
-    const {zoom} = useContext(StateContext);
+    const {zoom, paletteItem, stitchType} = useContext(StateContext);
     const {setZoom} = useContext(DispatchContext);
 
     function wheel(e: WheelEvent) {
@@ -34,22 +33,43 @@ export const Editor = () => {
     }
 
     function deleteThreadHandler(palette: PaletteType[], deletedItem: PaletteType) {
-        if (project) {
-            if (palette.length < project.palette.length) {
-                project.grid.forEach((row, rowIndex) => {
-                    row.forEach((cell, cellIndex) => {
-                        if (cell && cell.thread.name === deletedItem.thread?.name && cell.thread.vendor === cell.thread.vendor) {
-                            project.grid[rowIndex][cellIndex] = undefined;
-                        }
-                    })
+        if (project && palette.length < project.palette.length) {
+            project.grid.forEach((row, rowIndex) => {
+                row.forEach((cell, cellIndex) => {
+                    if (cell && cell.thread.name === deletedItem.thread?.name && cell.thread.vendor === cell.thread.vendor) {
+                        project.grid[rowIndex][cellIndex] = undefined;
+                    }
                 })
-            }
+            })
         }
     }
 
-    function cellClickHandler(rowIndex: number, cellIndex: number, direction: Direction) {
-        console.log(rowIndex, cellIndex, direction)
+    function cellClickHandler(rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) {
+        if (!project) return
+        const newGreed = [...project.grid];
+        if (paletteItem) {
+            if (!contextMenu) {
+                newGreed[rowIndex][cellIndex] = {
+                    symbol: paletteItem?.symbol,
+                    thread: paletteItem?.thread,
+                    stitch: newStitch(direction)
+                }
+            } else {
+                newGreed[rowIndex][cellIndex] = undefined;
+            }
+            setProject({...project, grid: newGreed} as Project);
+        }
     }
+
+    const newStitch = useCallback((clickDirection: Direction): Stitch => {
+        let direction: Direction = 'f';
+        switch (stitchType) {
+            case 'x':
+                direction = 'f';
+                break;
+        }
+        return {type: stitchType, direction}
+    }, [stitchType])
 
     useEffect(() => {
         projectService.get(id).then(res => {
@@ -72,9 +92,7 @@ export const Editor = () => {
         if (project) projectService.save(project).then(() => console.log('saved'))
     }, [project])
 
-    if (!project) {
-        return null;
-    }
+    if (!project) return null;
 
     return (
         <div className="editor">
