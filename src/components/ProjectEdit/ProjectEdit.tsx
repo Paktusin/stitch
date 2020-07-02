@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useParams, useHistory, Link} from 'react-router-dom';
 import {Project} from "../../types/project";
 import {projectService} from "../../services/dataService";
@@ -6,28 +6,24 @@ import {projectService} from "../../services/dataService";
 export const ProjectEdit: FunctionComponent = () => {
     const {id} = useParams();
     const [project, setProject] = useState<Project>(new Project());
-    const [size, setSize] = useState<{ height: number, width: number }>({height: 100, width: 100})
     const history = useHistory();
 
-    function onChangeHandler(prop: string, value: string) {
+    function onChangeHandler(prop: string, value: any) {
         setProject({...project, [prop]: value} as Project)
     }
 
-    function changeSize() {
-        const oldGrid = project.grid;
-        project.grid = [...Array(size.height)].map((_, rowIndex) => {
-            return [...Array(size.width)].map((_, cellIndex) => {
-                return (oldGrid[rowIndex] && oldGrid[rowIndex][cellIndex])  ;
-            });
-        })
-    }
 
     function save() {
-        changeSize();
         projectService.save(project).then(id => {
             history.push(`/draw/${id}`)
         })
     }
+
+    useEffect(() => {
+        if (id) {
+            projectService.get(id).then(res => setProject(res));
+        }
+    }, [])
 
     return (
         <div>
@@ -38,12 +34,14 @@ export const ProjectEdit: FunctionComponent = () => {
 
             <div>
                 <label>Height (stitches)</label>
-                <input value={size.height} onChange={e => setSize({...size, height: parseInt(e.target.value)})}/>
+                <input type="number" value={project.width}
+                       onChange={e => onChangeHandler('width', parseInt(e.target.value))}/>
             </div>
 
             <div>
                 <label>Height (stitches)</label>
-                <input value={size.width} onChange={e => setSize({...size, width: parseInt(e.target.value)})}/>
+                <input type="number" value={project.height}
+                       onChange={e => onChangeHandler('height', parseInt(e.target.value))}/>
             </div>
 
             <button onClick={e => save()}>{project.id ? 'Save' : 'Create'}</button>

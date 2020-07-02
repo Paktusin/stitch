@@ -16,9 +16,13 @@ export function Home() {
             <Link to={'/edit'}>new</Link>
             Recent projects:
             <ul>
-                {projects.map(project => <Link to={`/draw/${project.id}`}>
-                    <li>{project.name}</li>
-                </Link>)}
+                {projects.map((project,key) => {
+                    const createdAtDate = new Date(project.createdAt);
+                    const updatedAtDate = new Date(project.updatedAt);
+                    return (<Link to={`/draw/${project.id}`} key={key}>
+                        <li>{project.name} createdAt: {createdAtDate.toLocaleString()} | updatedAt: {updatedAtDate.toLocaleString()}</li>
+                    </Link>)
+                })}
             </ul>
         </div>
     )

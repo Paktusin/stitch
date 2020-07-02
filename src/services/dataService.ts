@@ -27,6 +27,7 @@ export class DataService<T extends Entity> {
         if (!entity.id) {
             entity.id = uuid();
         }
+        entity.updatedAt = new Date().getTime()
         return this.request((store) => store.put(entity))
     }
 

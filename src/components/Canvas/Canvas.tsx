@@ -5,15 +5,23 @@ import {StateContext} from "../Store";
 import {Direction} from "../../types/stitch";
 import {zoomSettings} from "../../types/zoom";
 import {colorService} from "../../services/colorService";
+import {GridType} from "../../types/project";
 
 export interface CanvasPropsType {
-    grid: (Cell | undefined)[][];
+    grid: GridType;
+    gridHeight: number;
+    gridWidth: number;
     onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void
 }
 
 const CELL_SIZE = 4;
 
-export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) => {
+export const Canvas: FunctionComponent<CanvasPropsType> = ({
+                                                               gridHeight,
+                                                               gridWidth,
+                                                               grid,
+                                                               onCellClick
+                                                           }) => {
     const {zoom} = useContext(StateContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
@@ -35,7 +43,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-        if (rowIndex <= grid.length - 1 && grid.length > 1 && cellIndex <= grid[0].length - 1) {
+        if (rowIndex <= gridHeight && cellIndex <= gridWidth) {
             onCellClick && onCellClick(rowIndex, cellIndex, direction, contextMenu)
         }
     }
@@ -58,16 +66,17 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {
-        grid.forEach((cells, rowIndex) => {
-            cells.forEach((cell, colIndex) => {
-                if (cell) drawCell(ctx, cell, colIndex, rowIndex);
+        Object.keys(grid).forEach((rowIndex: any) => {
+            Object.keys(grid[rowIndex]).forEach((colIndex: any) => {
+                const cell = grid[rowIndex][colIndex];
+                drawCell(ctx, cell, colIndex, rowIndex);
             })
-        });
+        })
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
-        const height = Math.min(size.height, grid.length * cellSize);
-        const width = Math.min(size.width, grid[0].length * cellSize);
+        const height = Math.min(size.height, gridHeight * cellSize);
+        const width = Math.min(size.width, gridWidth * cellSize);
         let i = 0;
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - zoomSettings.min) / 2})`;
@@ -110,7 +119,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
     }, []);
 
     useEffect(() => {
-        if (grid.length > 0) drawAll();
+        drawAll();
     }, [grid, size, zoom]);
 
     useEffect(() => {

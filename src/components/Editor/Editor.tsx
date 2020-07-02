@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import './Editor.scss';
-import {Project} from "../../types/project";
+import {GridType, Project} from "../../types/project";
 import {Panel} from "../Panel/Panel";
 import {Canvas} from "../Canvas/Canvas";
 import {useParams, useHistory} from "react-router-dom";
@@ -34,28 +34,38 @@ export const Editor = () => {
 
     function deleteThreadHandler(palette: PaletteType[], deletedItem: PaletteType) {
         if (project && palette.length < project.palette.length) {
-            project.grid.forEach((row, rowIndex) => {
-                row.forEach((cell, cellIndex) => {
-                    if (cell && cell.thread.name === deletedItem.thread?.name && cell.thread.vendor === cell.thread.vendor) {
-                        project.grid[rowIndex][cellIndex] = undefined;
+            Object.keys(project.grid).forEach((rowIndex: any) => {
+                Object.keys(project.grid[rowIndex]).forEach((colIndex: any) => {
+                    const cell = project.grid[rowIndex][colIndex];
+                    if (cell && cell.symbol === deletedItem.symbol) {
+                        deleteCell(project.grid, rowIndex, colIndex)
                     }
                 })
             })
         }
     }
 
-    function cellClickHandler(rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) {
+    function deleteCell(grid: GridType, rowIndex: number, colIndex: number): GridType {
+        delete grid[rowIndex][colIndex];
+        if (Object.keys(grid[rowIndex]).length === 0) {
+            delete grid[rowIndex];
+        }
+        return grid;
+    }
+
+    function cellClickHandler(rowIndex: number, colIndex: number, direction: Direction, contextMenu: boolean) {
         if (!project) return
-        const newGreed = [...project.grid];
+        const newGreed = {...project.grid};
+        if (!newGreed[rowIndex]) newGreed[rowIndex] = {};
         if (paletteItem) {
             if (!contextMenu) {
-                newGreed[rowIndex][cellIndex] = {
+                newGreed[rowIndex][colIndex] = {
                     symbol: paletteItem?.symbol,
                     thread: paletteItem?.thread,
                     stitch: newStitch(direction)
                 }
             } else {
-                newGreed[rowIndex][cellIndex] = undefined;
+                deleteCell(newGreed, rowIndex, colIndex)
             }
             setProject({...project, grid: newGreed} as Project);
         }
@@ -101,7 +111,10 @@ export const Editor = () => {
                 <Panel size={64} vertical={true} border={"Right"}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
                     <ZoomLabel/>
-                    <Canvas grid={project.grid} onCellClick={cellClickHandler}/>
+                    <Canvas grid={project.grid}
+                            gridWidth={project.width}
+                            gridHeight={project.height}
+                            onCellClick={cellClickHandler}/>
                 </div>
                 <RightPanel palette={project.palette}
                             onChange={palette => setProject({...project, palette} as Project)}

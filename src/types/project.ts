@@ -1,19 +1,14 @@
-import {Cell} from "./cell";
 import {Entity} from "./entity";
 import {PaletteType} from "./paletteType";
+import {Cell} from "./cell";
 
 export class Project extends Entity {
-    name: string;
-    createdAt: number;
-    updatedAt: number;
-    grid: (Cell | undefined)[][] = [];
+    name: string = 'new Project';
+    grid: GridType = {};
     palette: PaletteType[] = [];
-
-    constructor() {
-        super();
-        this.name = 'new Project';
-        this.createdAt = new Date().getTime();
-        this.updatedAt = new Date().getTime();
-    }
+    height: number = 100;
+    width: number = 100;
 }
 
+
+export type GridType = { [key: number]: { [key: number]: Cell } };

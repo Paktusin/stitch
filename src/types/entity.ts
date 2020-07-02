@@ -1,5 +1,7 @@
 export class Entity {
-    id?: string
+    id?: string;
+    createdAt: number = new Date().getTime();
+    updatedAt: number = new Date().getTime();
 
     import(object: any) {
         Object.keys(object).forEach(key => {
