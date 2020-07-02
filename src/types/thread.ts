@@ -1,7 +1,7 @@
-import anchor from '../assets/anchor.json'
-import dmc from '../assets/dmc.json'
-import gamma from '../assets/gamma.json'
-import maderia from '../assets/maderia.json'
+import anchor from '../assets/threads/anchor.json'
+import dmc from '../assets/threads/dmc.json'
+import gamma from '../assets/threads/gamma.json'
+import maderia from '../assets/threads/maderia.json'
 
 export interface Thread {
     color: string;

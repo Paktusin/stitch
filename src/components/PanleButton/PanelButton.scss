@@ -1,4 +1,6 @@
 .PanelButton {
+  cursor: pointer;
+
   &.active {
     background-color: gray;
   }

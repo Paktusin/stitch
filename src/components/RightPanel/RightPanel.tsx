@@ -5,7 +5,7 @@ import {Palette} from "../Palette/Palette";
 import {PaletteType} from "../../types/paletteType";
 import {Modal} from "../Modal/Modal";
 import {PaletteEdit} from "../PaleteEdit/PaletteEdit";
-import {DispatchContext, StateContext} from "../Store";
+import {DispatchContext, StoreContext} from "../Store";
 import {SymbolType, symbolTypes} from "../../types/symbol";
 import {Thread} from "../../types/thread";
 

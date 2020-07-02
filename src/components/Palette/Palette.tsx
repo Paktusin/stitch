@@ -3,7 +3,7 @@ import './Palette.scss'
 import {PaletteType} from "../../types/paletteType";
 import cls from 'classnames'
 import {colorService} from "../../services/colorService";
-import {DispatchContext, StateContext} from "../Store";
+import {DispatchContext, StoreContext} from "../Store";
 import {SymbolType, symbolTypes} from "../../types/symbol";
 import {Thread} from "../../types/thread";
 
@@ -13,7 +13,7 @@ export interface PalettePropsType {
 }
 
 export const Palette: FunctionComponent<PalettePropsType> = ({palette, onDoubleClick}) => {
-    const {symbol: selectedSymbol} = useContext(StateContext);
+    const {symbol: selectedSymbol} = useContext(StoreContext);
     const {setSymbol} = useContext(DispatchContext);
     return (
         <div className="Palette">

@@ -1,9 +1,10 @@
 @import "src/variables";
 
 .Panel {
-  display: block;
+  display: flex;
   height: 48px;
   width: 100%;
+  flex-wrap: wrap;
 
   &.vertical {
     height: auto;

@@ -1,6 +1,7 @@
 .Palette {
   display: flex;
   flex-wrap: wrap;
+  align-self: flex-start;
 
   .colorBox {
     box-sizing: border-box;

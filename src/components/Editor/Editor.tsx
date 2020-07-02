@@ -5,7 +5,7 @@ import {Panel} from "../Panel/Panel";
 import {Canvas} from "../Canvas/Canvas";
 import {useParams, useHistory} from "react-router-dom";
 import {projectService} from "../../services/dataService";
-import {StateContext, DispatchContext, Store} from "../Store";
+import {StoreContext, DispatchContext, Store} from "../Store";
 import {ZoomLabel} from "../ZoomLabel/ZoomLabel";
 import {zoomSettings} from "../../types/zoom";
 import {RightPanel} from "../RightPanel/RightPanel";
@@ -18,7 +18,7 @@ export const Editor = () => {
     const canvasContainerRef = useRef<HTMLDivElement>(document.createElement('div'));
     const {id} = useParams();
     const history = useHistory();
-    const {zoom, symbol, stitchType} = useContext(StateContext);
+    const {zoom, symbol, stitchType} = useContext(StoreContext);
     const {setZoom} = useContext(DispatchContext);
 
     function wheel(e: WheelEvent) {

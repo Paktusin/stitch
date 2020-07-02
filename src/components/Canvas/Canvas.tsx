@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import './Canvas.scss';
 import {Cell} from "../../types/cell";
-import {StateContext} from "../Store";
+import {StoreContext, StoreType} from "../Store";
 import {Direction} from "../../types/stitch";
 import {zoomSettings} from "../../types/zoom";
 import {colorService} from "../../services/colorService";
@@ -18,7 +18,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
                                                                onCellClick
                                                            }) => {
-    const {zoom} = useContext(StateContext);
+    const {zoom, view} = useContext(StoreContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
     const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale])
@@ -26,6 +26,9 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const height = useMemo(() => Math.min(size.height, project.height * cellSize), [size, project.height, cellSize]);
     const width = useMemo(() => Math.min(size.width, project.width * cellSize), [size, project.height, cellSize]);
     const {grid, palette} = project;
+
+    const aidaImgEl = document.querySelector('#aida') as HTMLImageElement;
+    const counterImgEl = document.querySelector('#counter') as HTMLImageElement;
 
     function resize() {
         const parent = ref.current.parentElement;
@@ -76,7 +79,24 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     function drawBackGround(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, width, height)
+        ctx.fillRect(0, 0, width, height);
+
+        if (view === 'aida' || view === 'count') {
+
+            let i = 0;
+            while (i <= height / cellSize) {
+                let j = 0;
+                while (j <= width / cellSize) {
+                    ctx.drawImage(view === 'aida' ? aidaImgEl : counterImgEl,
+                        j * cellSize,
+                        i * cellSize,
+                        cellSize,
+                        cellSize)
+                    j++;
+                }
+                i++;
+            }
+        }
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
@@ -110,7 +130,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         ctx.clearRect(0, 0, size.width, size.height);
         drawBackGround(ctx);
         drawCells(ctx);
-        drawGrid(ctx);
+        if (view === 'grid') drawGrid(ctx);
     }
 
     function getCtx(): CanvasRenderingContext2D {
@@ -124,7 +144,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     useEffect(() => {
         drawAll();
-    }, [grid, size, zoom]);
+    }, [grid, size, zoom, view]);
 
     useEffect(() => {
         window.addEventListener('resize', resize);

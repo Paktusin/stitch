@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
-import {StateContext} from "../Store";
+import {StoreContext} from "../Store";
 import {zoomSettings} from "../../types/zoom";
 import cls from 'classnames'
 import './ZoomLabel.scss'
 
 export const ZoomLabel = () => {
-    const {zoom} = useContext(StateContext);
+    const {zoom} = useContext(StoreContext);
     const label = ((zoom.scale - zoomSettings.min) * 100 / (1 - zoomSettings.min)).toFixed(0) + '%'
     const [active, setActive] = useState();
     useEffect(() => {
