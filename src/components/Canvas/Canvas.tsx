@@ -5,7 +5,7 @@ import {Cell} from "../../types/cell";
 import {StateContext} from "../Store";
 
 export interface CanvasPropsType {
-    grid: Cell[][];
+    grid: (Cell| undefined)[][];
     onChange?: (canvas: Project) => void
 }
 
@@ -36,7 +36,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid}) => {
         }
         const fontSize = zoomedSize / 2;
 
-        ctx.fillStyle = stitch.color;
+        ctx.fillStyle = stitch.thread.color;
         ctx.fillRect(zX, zY, zoomedSize, zoomedSize);
 
 

@@ -9,6 +9,8 @@ import {StateContext, DispatchContext, Store} from "../Store";
 import {ZoomLabel} from "../ZoomLabel/ZoomLabel";
 import {zoomSettings} from "../../types/zoom";
 import {RightPanel} from "../RightPanel/RightPanel";
+import {TopPanel} from "../TopPanel/TopPanel";
+import {PaletteType} from "../../types/paletteType";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
@@ -26,6 +28,20 @@ export const Editor = () => {
                 ...zoom,
                 scale: newScale,
             });
+        }
+    }
+
+    function deleteThreadHandler(palette: PaletteType[], deletedItem: PaletteType) {
+        if (project) {
+            if (palette.length < project.palette.length) {
+                project.grid.forEach((row, rowIndex) => {
+                    row.forEach((cell, cellIndex) => {
+                        if (cell && cell.thread.name === deletedItem.thread?.name && cell.thread.vendor === cell.thread.vendor) {
+                            project.grid[rowIndex][cellIndex] = undefined;
+                        }
+                    })
+                })
+            }
         }
     }
 
@@ -56,14 +72,17 @@ export const Editor = () => {
 
     return (
         <div className="editor">
-            <Panel size={32}/>
+            <TopPanel/>
             <div className="mainArea">
                 <Panel size={64} vertical={true} border={"Right"}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
                     <ZoomLabel/>
                     <Canvas grid={project.grid} onChange={setProject}/>
                 </div>
-                <RightPanel palette={project.palette} onChange={palette => setProject({...project, palette} as Project)}/>
+                <RightPanel palette={project.palette}
+                            onChange={palette => setProject({...project, palette} as Project)}
+                            onDelete={deleteThreadHandler}
+                />
             </div>
         </div>
     );

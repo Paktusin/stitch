@@ -6,7 +6,7 @@ export class Project extends Entity {
     name: string;
     createdAt: number;
     updatedAt: number;
-    grid: Cell[][] = [];
+    grid: (Cell | undefined)[][] = [];
     palette: PaletteType[] = [];
 
     constructor() {

@@ -11,8 +11,9 @@ export interface StoreType {
 }
 
 export interface DispatchType {
-    setZoom: (zoom: Zoom) => void,
-    setPaletteItem: (paletteItem: PaletteType) => void,
+    setZoom: (value: Zoom) => void,
+    setPaletteItem: (value: PaletteType) => void,
+    setStitchType: (value: StitchType) => void,
 }
 
 // @ts-ignore
@@ -25,6 +26,7 @@ export const Store = ({children}: any) => {
     const actionList = React.useMemo(() => ({
         setZoom: (value: Zoom) => dispatch({type: actionTypes.SET_ZOOM, value}),
         setPaletteItem: (value: PaletteType) => dispatch({type: actionTypes.SET_PALETTE_ITEM, value}),
+        setStitchType: (value: StitchType) => dispatch({type: actionTypes.SET_STITCH_TYPE, value}),
     }), [dispatch]);
 
     return (

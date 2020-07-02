@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext, useMemo, useState} from "react";
+import React, {FunctionComponent, useContext, useEffect, useMemo, useState} from "react";
 import {Panel} from "../Panel/Panel";
 import {PanelButton} from "../PanleButton/PanelButton";
 import {Palette} from "../Palette/Palette";
@@ -9,24 +9,33 @@ import {DispatchContext, StateContext} from "../Store";
 
 export interface RightPanelType {
     onChange: (palette: PaletteType[]) => void,
+    onDelete: (palette: PaletteType[], deletedItem: PaletteType) => void,
     palette: PaletteType[]
 }
 
-export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onChange}) => {
+export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onChange, onDelete}) => {
     const [modalOpened, setModalOpened] = useState(false);
     const [editIndex, setEditIndex] = useState<number>();
     const {setPaletteItem} = useContext(DispatchContext);
     const {paletteItem} = useContext(StateContext);
 
-    function saveHandler(paletteItem?: PaletteType) {
-        if (paletteItem) {
-            if (editIndex !== undefined) {
-                const newPalette = [...palette];
-                newPalette.splice(editIndex, 1, paletteItem)
-                onChange(newPalette);
-            } else {
-                onChange([...palette, paletteItem]);
-            }
+    function saveHandler(paletteItem: PaletteType) {
+        if (editIndex !== undefined) {
+            const newPalette = [...palette];
+            newPalette.splice(editIndex, 1, paletteItem)
+            onChange(newPalette);
+        } else {
+            onChange([...palette, paletteItem]);
+        }
+        setModalOpened(false)
+    }
+
+    function deleteHandler() {
+        if (editIndex !== undefined) {
+            const newPalette = [...palette];
+            const deletedItem = newPalette[editIndex];
+            newPalette.splice(editIndex, 1)
+            onDelete(newPalette, deletedItem);
         }
         setModalOpened(false)
     }
@@ -38,12 +47,23 @@ export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onC
 
     const editPaletteItem = useMemo(() => palette[editIndex !== undefined ? editIndex : -1], [editIndex, palette]);
 
+    useEffect(() => {
+        if (palette.length) {
+            setPaletteItem(palette[0])
+        }
+    }, [])
+
     return (
         <Panel size={128} vertical={true} border={"Left"}>
             <PanelButton onClick={e => editHandler()}>+</PanelButton>
             <Palette selected={paletteItem} palette={palette} onClick={setPaletteItem} onDoubleClick={editHandler}/>
             <Modal opened={modalOpened} onBackDrop={() => setModalOpened(false)}>
-                <PaletteEdit paletteItem={editPaletteItem} onSave={saveHandler}/>
+                <PaletteEdit edit={editIndex !== -1}
+                             paletteItem={editPaletteItem}
+                             onSave={saveHandler}
+                             onCancel={() => setModalOpened(false)}
+                             onDelete={deleteHandler}
+                />
             </Modal>
         </Panel>
     )

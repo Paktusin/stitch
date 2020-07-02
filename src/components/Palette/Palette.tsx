@@ -21,11 +21,12 @@ export const Palette: FunctionComponent<PalettePropsType> = ({palette, onClick, 
         <div className="Palette">
             {palette.map((paletteItem, index) => {
                     const contrastColor = colorService.strRgbContrast(paletteItem.thread?.color);
+                    const title = paletteItem.thread?.vendor + ' ' + paletteItem.thread?.name;
                     return (
                         <div className={cls('colorBox', {selected: isSelected(paletteItem)})}
                              key={index}
-                             style={{backgroundColor: paletteItem.thread?.color}}
-                             title={paletteItem.thread?.name}
+                             style={{backgroundColor: paletteItem.thread?.color, borderColor: contrastColor}}
+                             title={title}
                              onDoubleClick={e => onDoubleClick && onDoubleClick(paletteItem, index)}
                              onClick={e => onClick && onClick(paletteItem, index)}>
                             <span style={{color: contrastColor}}>{paletteItem.symbol}</span>

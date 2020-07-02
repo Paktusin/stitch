@@ -1,6 +1,9 @@
 import {Stitch} from "./stitch";
+import {Thread} from "./thread";
+import {SymbolType} from "./symbol";
 
-export interface Cell {
-    color: string;
+export type Cell = {
+    thread: Thread;
     value: Stitch;
+    symbol: SymbolType;
 }

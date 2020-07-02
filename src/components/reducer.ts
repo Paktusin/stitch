@@ -3,6 +3,7 @@ import {StoreType} from "./Store";
 export const actionTypes = {
     SET_ZOOM: 'SET_ZOOM',
     SET_PALETTE_ITEM: 'SET_PALETTE_ITEM',
+    SET_STITCH_TYPE: 'SET_STITCH_TYPE',
 };
 
 export const initialState: StoreType = {
@@ -16,6 +17,8 @@ export function mainReducer(state: StoreType, action: { type: string, value: any
             return {...state, zoom: action.value};
         case actionTypes.SET_PALETTE_ITEM:
             return {...state, paletteItem: action.value};
+        case actionTypes.SET_STITCH_TYPE:
+            return {...state, stitchType: action.value};
         default:
             return state;
     }
