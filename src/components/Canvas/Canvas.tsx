@@ -67,8 +67,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
-        const height = grid.length * cellSize;
-        const width = grid[0].length * cellSize;
+        const height = zoomed((grid.length) * CELL_SIZE);
+        const width = zoomed((grid[0].length) * CELL_SIZE);
         let i = 0;
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - zoomSettings.min) / 2})`;
