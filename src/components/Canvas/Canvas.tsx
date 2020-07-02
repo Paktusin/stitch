@@ -60,7 +60,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         ctx.fillStyle = colorService.strRgbContrast(color);
         ctx.shadowBlur = 0;
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillText(cell.symbol, zX + (cellSize - fontSize / 2) / 2, zY + (cellSize + fontSize / 2) / 2)
+        ctx.fillText(cell.symbol, zX + (cellSize - fontSize / 1.5) / 2, zY + (cellSize + fontSize / 1.5) / 2)
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {

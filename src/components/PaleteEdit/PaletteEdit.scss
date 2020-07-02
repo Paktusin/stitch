@@ -4,9 +4,22 @@
   .threadContainer {
     max-height: 300px;
     overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
 
-    .thread{
+    .thread {
+      user-select: none;
+      cursor: pointer;
+      display: flex;
+      width: 48px;
+      height: 24px;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
 
+      &.selected {
+        border: 2px dotted;
+      }
     }
   }
 }

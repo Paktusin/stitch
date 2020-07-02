@@ -42,6 +42,10 @@ export const Editor = () => {
                     }
                 })
             })
+            const newPalette = {...project.palette}
+            delete newPalette[symbol];
+            setProject({...project, palette: newPalette, grid: {...project.grid}} as Project);
+
         }
     }
 

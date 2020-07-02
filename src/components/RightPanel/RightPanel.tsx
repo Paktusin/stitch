@@ -25,15 +25,11 @@ export const RightPanel: FunctionComponent<RightPanelType> = ({palette = {}, onC
     }
 
     function deleteHandler() {
-        if (editSymbol !== undefined) {
-            const newPalette = {...palette};
-            delete newPalette[editSymbol];
-            onDelete(editSymbol);
-        }
+        onDelete(editSymbol);
         setModalOpened(false)
     }
 
-    function editHandler(symbol:SymbolType) {
+    function editHandler(symbol: SymbolType) {
         setEditSymbol(symbol);
         setModalOpened(true);
     }

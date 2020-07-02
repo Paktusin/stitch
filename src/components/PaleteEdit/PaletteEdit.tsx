@@ -2,6 +2,7 @@ import React, {FunctionComponent, useEffect, useMemo, useState} from "react";
 import {Thread, vendors} from "../../types/thread";
 import cls from 'classnames';
 import './PaletteEdit.scss';
+import {colorService} from "../../services/colorService";
 
 export interface PaletteEditType {
     thread?: Thread,
@@ -28,6 +29,12 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
             }
         }, [thread])
 
+        function deleteHandler() {
+            if (window.confirm('Do you really want to delete thread from project?')) {
+                onDelete && onDelete();
+            }
+        }
+
         return (
             <div className="PaletteEdit">
                 <hr/>
@@ -40,19 +47,28 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
                 <label>Threads</label>
                 <input placeholder='search code...' value={search} onChange={e => setSearch(e.target.value)}/>
                 <div className="threadContainer">
-                    {vendors[vendor].map((thread, key) =>
-                        <div
-                            onClick={e => setThread(thread)}
-                            key={key}
-                            className={cls('thread', {selected: thread.name === selectedThread?.name})}>
-                            {thread.name}
-                        </div>
+                    {vendors[vendor].map((thread, key) => {
+                            const color = colorService.strRgbContrast(thread.color);
+                            return (
+                                <div
+                                    style={{
+                                        borderColor: color,
+                                        backgroundColor: thread.color,
+                                        color: color
+                                    }}
+                                    onClick={e => setThread(thread)}
+                                    key={key}
+                                    className={cls('thread', {selected: thread.name === selectedThread?.name})}>
+                                    {thread.name}
+                                </div>
+                            )
+                        }
                     )}
                 </div>
                 <hr/>
                 <button onClick={e => onSave && onSave(selectedThread)}>Save</button>
                 <button onClick={e => onCancel && onCancel()}>Cancel</button>
-                <button onClick={e => onDelete && onDelete()}>Delete</button>
+                <button onClick={deleteHandler}>Delete</button>
             </div>
         )
     }
