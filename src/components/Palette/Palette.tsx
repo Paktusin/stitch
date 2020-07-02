@@ -1,39 +1,45 @@
-import React, {FunctionComponent, useCallback} from "react";
+import React, {FunctionComponent, useCallback, useContext} from "react";
 import './Palette.scss'
 import {PaletteType} from "../../types/paletteType";
 import cls from 'classnames'
 import {colorService} from "../../services/colorService";
+import {DispatchContext, StateContext} from "../Store";
+import {SymbolType, symbolTypes} from "../../types/symbol";
+import {Thread} from "../../types/thread";
 
 export interface PalettePropsType {
-    onClick?: (paletteItem: PaletteType, index: number) => void,
-    onDoubleClick?: (paletteItem: PaletteType, index: number) => void,
-    palette: PaletteType[]
-    selected?: PaletteType
+    onDoubleClick?: (symbol: SymbolType) => void,
+    palette: PaletteType
 }
 
-export const Palette: FunctionComponent<PalettePropsType> = ({palette, onClick, selected, onDoubleClick}) => {
-
-    const isSelected = useCallback((paletteItem: PaletteType) => {
-        return selected?.thread?.name === paletteItem.thread?.name && paletteItem.thread?.vendor === selected?.thread?.vendor
-    }, [selected])
-
+export const Palette: FunctionComponent<PalettePropsType> = ({palette, onDoubleClick}) => {
+    const {symbol: selectedSymbol} = useContext(StateContext);
+    const {setSymbol} = useContext(DispatchContext);
     return (
         <div className="Palette">
-            {palette.map((paletteItem, index) => {
-                    const contrastColor = colorService.strRgbContrast(paletteItem.thread?.color);
-                    const title = paletteItem.thread?.vendor + ' ' + paletteItem.thread?.name;
-                    return (
-                        <div className={cls('colorBox', {selected: isSelected(paletteItem)})}
-                             key={index}
-                             style={{backgroundColor: paletteItem.thread?.color, borderColor: contrastColor}}
-                             title={title}
-                             onDoubleClick={e => onDoubleClick && onDoubleClick(paletteItem, index)}
-                             onClick={e => onClick && onClick(paletteItem, index)}>
-                            <span style={{color: contrastColor}}>{paletteItem.symbol}</span>
-                        </div>
-                    )
-                }
-            )}
+            {symbolTypes
+                .sort((a, b) => {
+                    const threadA = palette[a];
+                    const threadB = palette[b];
+                    if (!!threadA && !!threadB || !threadA && !threadB) return a > b ? -1 : 1;
+                    return threadA ? -1 : 1;
+                })
+                .map((symbol, index) => {
+                        const thread: Thread | undefined = palette[symbol];
+                        const contrastColor = thread ? colorService.strRgbContrast(thread.color) : 'black';
+                        const style = {borderColor: contrastColor, color: contrastColor, backgroundColor: thread?.color}
+                        return (
+                            <div className={cls('colorBox', {selected: selectedSymbol == symbol})}
+                                 key={index}
+                                 style={style}
+                                 title={thread && (thread.vendor + ' ' + thread.name)}
+                                 onDoubleClick={e => onDoubleClick && onDoubleClick(symbol)}
+                                 onClick={e => setSymbol(symbol)}>
+                                {symbol}
+                            </div>
+                        )
+                    }
+                )}
         </div>
     )
 }

@@ -5,7 +5,7 @@ import {Cell} from "./cell";
 export class Project extends Entity {
     name: string = 'new Project';
     grid: GridType = {};
-    palette: PaletteType[] = [];
+    palette: PaletteType = {};
     height: number = 100;
     width: number = 100;
 }

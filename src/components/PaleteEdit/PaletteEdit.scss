@@ -1,8 +1,12 @@
 .PaletteEdit {
   max-width: 500px;
 
-  .paletteContainer {
+  .threadContainer {
     max-height: 300px;
     overflow: auto;
+
+    .thread{
+
+    }
   }
 }

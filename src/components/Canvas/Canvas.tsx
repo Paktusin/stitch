@@ -5,21 +5,17 @@ import {StateContext} from "../Store";
 import {Direction} from "../../types/stitch";
 import {zoomSettings} from "../../types/zoom";
 import {colorService} from "../../services/colorService";
-import {GridType} from "../../types/project";
+import {Project} from "../../types/project";
 
 export interface CanvasPropsType {
-    grid: GridType;
-    gridHeight: number;
-    gridWidth: number;
+    project: Project;
     onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void
 }
 
 const CELL_SIZE = 4;
 
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
-                                                               gridHeight,
-                                                               gridWidth,
-                                                               grid,
+                                                               project,
                                                                onCellClick
                                                            }) => {
     const {zoom} = useContext(StateContext);
@@ -27,6 +23,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
     const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale])
     const cellSize = useMemo(() => zoomed(CELL_SIZE), [zoomed]);
+    const {grid, palette} = project;
 
     function resize() {
         const parent = ref.current.parentElement;
@@ -43,26 +40,27 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-        if (rowIndex <= gridHeight && cellIndex <= gridWidth) {
+        if (rowIndex <= project.height && cellIndex <= project.width) {
             onCellClick && onCellClick(rowIndex, cellIndex, direction, contextMenu)
         }
     }
 
-    function drawCell(ctx: CanvasRenderingContext2D, stitch: Cell, cellIndex: number, rowIndex: number) {
+    function drawCell(ctx: CanvasRenderingContext2D, cell: Cell, cellIndex: number, rowIndex: number) {
         const zX = cellIndex * cellSize;
         const zY = rowIndex * cellSize;
+        const color = palette[cell.symbol].color;
         if (zX > size.width || zY > size.height) {
             return;
         }
         const fontSize = cellSize / 1.5;
 
-        ctx.fillStyle = stitch.thread.color;
+        ctx.fillStyle = color;
         ctx.fillRect(zX, zY, cellSize, cellSize);
 
-        ctx.fillStyle = colorService.strRgbContrast(stitch.thread.color);
+        ctx.fillStyle = colorService.strRgbContrast(color);
         ctx.shadowBlur = 0;
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillText(stitch.symbol, zX + (cellSize - fontSize / 2) / 2, zY + (cellSize + fontSize / 2) / 2)
+        ctx.fillText(cell.symbol, zX + (cellSize - fontSize / 2) / 2, zY + (cellSize + fontSize / 2) / 2)
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {
@@ -75,8 +73,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
-        const height = Math.min(size.height, gridHeight * cellSize);
-        const width = Math.min(size.width, gridWidth * cellSize);
+        const height = Math.min(size.height, project.height * cellSize);
+        const width = Math.min(size.width, project.width * cellSize);
         let i = 0;
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - zoomSettings.min) / 2})`;

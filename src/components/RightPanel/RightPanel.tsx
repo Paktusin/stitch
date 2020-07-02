@@ -6,60 +6,43 @@ import {PaletteType} from "../../types/paletteType";
 import {Modal} from "../Modal/Modal";
 import {PaletteEdit} from "../PaleteEdit/PaletteEdit";
 import {DispatchContext, StateContext} from "../Store";
+import {SymbolType, symbolTypes} from "../../types/symbol";
+import {Thread} from "../../types/thread";
 
 export interface RightPanelType {
-    onChange: (palette: PaletteType[]) => void,
-    onDelete: (palette: PaletteType[], deletedItem: PaletteType) => void,
-    palette: PaletteType[]
+    onChange: (palette: PaletteType) => void,
+    onDelete: (symbol: SymbolType) => void,
+    palette: PaletteType
 }
 
-export const RightPanel: FunctionComponent<RightPanelType> = ({palette = [], onChange, onDelete}) => {
+export const RightPanel: FunctionComponent<RightPanelType> = ({palette = {}, onChange, onDelete}) => {
     const [modalOpened, setModalOpened] = useState(false);
-    const [editIndex, setEditIndex] = useState<number>();
-    const {setPaletteItem} = useContext(DispatchContext);
-    const {paletteItem} = useContext(StateContext);
+    const [editSymbol, setEditSymbol] = useState<SymbolType>(symbolTypes[0]);
 
-    function saveHandler(paletteItem: PaletteType) {
-        if (editIndex !== undefined) {
-            const newPalette = [...palette];
-            newPalette.splice(editIndex, 1, paletteItem)
-            onChange(newPalette);
-        } else {
-            onChange([...palette, paletteItem]);
-        }
+    function saveHandler(thread: Thread) {
+        onChange({...palette, [editSymbol]: thread});
         setModalOpened(false)
     }
 
     function deleteHandler() {
-        if (editIndex !== undefined) {
-            const newPalette = [...palette];
-            const deletedItem = newPalette[editIndex];
-            newPalette.splice(editIndex, 1)
-            onDelete(newPalette, deletedItem);
+        if (editSymbol !== undefined) {
+            const newPalette = {...palette};
+            delete newPalette[editSymbol];
+            onDelete(editSymbol);
         }
         setModalOpened(false)
     }
 
-    function editHandler(paletteItem?: PaletteType, index?: number) {
-        setEditIndex(index);
+    function editHandler(symbol:SymbolType) {
+        setEditSymbol(symbol);
         setModalOpened(true);
     }
 
-    const editPaletteItem = useMemo(() => palette[editIndex !== undefined ? editIndex : -1], [editIndex, palette]);
-
-    useEffect(() => {
-        if (palette.length && !paletteItem) {
-            setPaletteItem(palette[0])
-        }
-    }, [palette])
-
     return (
         <Panel size={128} vertical={true} border={"Left"}>
-            <PanelButton onClick={e => editHandler()}>+</PanelButton>
-            <Palette selected={paletteItem} palette={palette} onClick={setPaletteItem} onDoubleClick={editHandler}/>
+            <Palette palette={palette} onDoubleClick={editHandler}/>
             <Modal opened={modalOpened} onBackDrop={() => setModalOpened(false)}>
-                <PaletteEdit edit={editIndex !== -1}
-                             paletteItem={editPaletteItem}
+                <PaletteEdit thread={palette[editSymbol]}
                              onSave={saveHandler}
                              onCancel={() => setModalOpened(false)}
                              onDelete={deleteHandler}

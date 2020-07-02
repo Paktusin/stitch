@@ -10,15 +10,15 @@ import {ZoomLabel} from "../ZoomLabel/ZoomLabel";
 import {zoomSettings} from "../../types/zoom";
 import {RightPanel} from "../RightPanel/RightPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
-import {PaletteType} from "../../types/paletteType";
 import {Direction, Stitch} from "../../types/stitch";
+import {SymbolType} from "../../types/symbol";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
     const canvasContainerRef = useRef<HTMLDivElement>(document.createElement('div'));
     const {id} = useParams();
     const history = useHistory();
-    const {zoom, paletteItem, stitchType} = useContext(StateContext);
+    const {zoom, symbol, stitchType} = useContext(StateContext);
     const {setZoom} = useContext(DispatchContext);
 
     function wheel(e: WheelEvent) {
@@ -32,12 +32,12 @@ export const Editor = () => {
         }
     }
 
-    function deleteThreadHandler(palette: PaletteType[], deletedItem: PaletteType) {
-        if (project && palette.length < project.palette.length) {
+    function deleteThreadHandler(symbol: SymbolType) {
+        if (project) {
             Object.keys(project.grid).forEach((rowIndex: any) => {
                 Object.keys(project.grid[rowIndex]).forEach((colIndex: any) => {
                     const cell = project.grid[rowIndex][colIndex];
-                    if (cell && cell.symbol === deletedItem.symbol) {
+                    if (cell && cell.symbol === symbol) {
                         deleteCell(project.grid, rowIndex, colIndex)
                     }
                 })
@@ -55,19 +55,18 @@ export const Editor = () => {
 
     function cellClickHandler(rowIndex: number, colIndex: number, direction: Direction, contextMenu: boolean) {
         if (!project) return
-        const newGreed = {...project.grid};
-        if (!newGreed[rowIndex]) newGreed[rowIndex] = {};
-        if (paletteItem) {
+        const newGrid = {...project.grid};
+        if (!newGrid[rowIndex]) newGrid[rowIndex] = {};
+        if (symbol && project.palette[symbol]) {
             if (!contextMenu) {
-                newGreed[rowIndex][colIndex] = {
-                    symbol: paletteItem?.symbol,
-                    thread: paletteItem?.thread,
+                newGrid[rowIndex][colIndex] = {
+                    symbol: symbol,
                     stitch: newStitch(direction)
                 }
             } else {
-                deleteCell(newGreed, rowIndex, colIndex)
+                deleteCell(newGrid, rowIndex, colIndex)
             }
-            setProject({...project, grid: newGreed} as Project);
+            setProject({...project, grid: newGrid} as Project);
         }
     }
 
@@ -111,9 +110,7 @@ export const Editor = () => {
                 <Panel size={64} vertical={true} border={"Right"}/>
                 <div className="canvasContainer" ref={canvasContainerRef}>
                     <ZoomLabel/>
-                    <Canvas grid={project.grid}
-                            gridWidth={project.width}
-                            gridHeight={project.height}
+                    <Canvas project={project}
                             onCellClick={cellClickHandler}/>
                 </div>
                 <RightPanel palette={project.palette}

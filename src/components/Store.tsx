@@ -2,19 +2,19 @@ import React, {useEffect} from "react";
 import {Zoom, zoomSettings} from "../types/zoom";
 import {actionTypes, initialState, mainReducer} from "./reducer";
 import {StitchType} from "../types/stitch";
-import {PaletteType} from "../types/paletteType";
 import {localStorageService} from "../services/localStorageService";
+import {SymbolType} from "../types/symbol";
 
 export interface StoreType {
     zoom: Zoom,
     stitchType: StitchType
-    paletteItem?: PaletteType
+    symbol: SymbolType
 }
 
 export interface DispatchType {
     setZoom: (value: Zoom) => void,
-    setPaletteItem: (value: PaletteType) => void,
     setStitchType: (value: StitchType) => void,
+    setSymbol: (value: SymbolType) => void,
 }
 
 // @ts-ignore
@@ -29,7 +29,7 @@ export const Store = ({children}: any) => {
     });
     const actionList = React.useMemo(() => ({
         setZoom: (value: Zoom) => dispatch({type: actionTypes.SET_ZOOM, value}),
-        setPaletteItem: (value: PaletteType) => dispatch({type: actionTypes.SET_PALETTE_ITEM, value}),
+        setSymbol: (value: StitchType) => dispatch({type: actionTypes.SET_SYMBOL, value}),
         setStitchType: (value: StitchType) => dispatch({type: actionTypes.SET_STITCH_TYPE, value}),
     }), [dispatch]);
 
