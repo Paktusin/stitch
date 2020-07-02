@@ -34,6 +34,10 @@ export const Palette: FunctionComponent<PalettePropsType> = ({palette, onDoubleC
                                  style={style}
                                  title={thread && (thread.vendor + ' ' + thread.name)}
                                  onDoubleClick={e => onDoubleClick && onDoubleClick(symbol)}
+                                 onContextMenu={e => {
+                                     e.preventDefault();
+                                     onDoubleClick && onDoubleClick(symbol)
+                                 }}
                                  onClick={e => setSymbol(symbol)}>
                                 {symbol}
                             </div>

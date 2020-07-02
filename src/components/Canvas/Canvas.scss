@@ -1,3 +1,5 @@
-.Canvas {
+@import "src/variables";
 
+.Canvas {
+  background-color: $panelBackground;
 }

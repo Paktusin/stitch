@@ -23,6 +23,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
     const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale])
     const cellSize = useMemo(() => zoomed(CELL_SIZE), [zoomed]);
+    const height = useMemo(() => Math.min(size.height, project.height * cellSize), [size, project.height, cellSize]);
+    const width = useMemo(() => Math.min(size.width, project.width * cellSize), [size, project.height, cellSize]);
     const {grid, palette} = project;
 
     function resize() {
@@ -72,9 +74,12 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         })
     }
 
+    function drawBackGround(ctx: CanvasRenderingContext2D) {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, width, height)
+    }
+
     function drawGrid(ctx: CanvasRenderingContext2D) {
-        const height = Math.min(size.height, project.height * cellSize);
-        const width = Math.min(size.width, project.width * cellSize);
         let i = 0;
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - zoomSettings.min) / 2})`;
@@ -103,6 +108,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     function drawAll() {
         const ctx = getCtx();
         ctx.clearRect(0, 0, size.width, size.height);
+        drawBackGround(ctx);
         drawCells(ctx);
         drawGrid(ctx);
     }

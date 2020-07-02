@@ -57,6 +57,7 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
                                         color: color
                                     }}
                                     onClick={e => setThread(thread)}
+                                    onDoubleClick={e => onSave && onSave(thread)}
                                     key={key}
                                     className={cls('thread', {selected: thread.name === selectedThread?.name})}>
                                     {thread.name}

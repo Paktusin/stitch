@@ -1,3 +1,5 @@
+@import "src/variables";
+
 .Panel {
   display: block;
   height: 48px;
@@ -9,6 +11,6 @@
     min-width: 48px;
   }
 
-  background-color: #f0f0f0cc;
+  background-color: $panelBackground;
   box-sizing: border-box;
 }
