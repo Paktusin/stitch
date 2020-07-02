@@ -35,40 +35,39 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({grid, onCellClick}) 
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-        if (rowIndex <= grid.length && grid.length > 1 && cellIndex <= grid[0].length) {
+        if (rowIndex <= grid.length - 1 && grid.length > 1 && cellIndex <= grid[0].length - 1) {
             onCellClick && onCellClick(rowIndex, cellIndex, direction, contextMenu)
         }
     }
 
-    function drawCell(ctx: CanvasRenderingContext2D, stitch: Cell, x: number, y: number) {
-        const zX = zoomed(x);
-        const zY = zoomed(y);
+    function drawCell(ctx: CanvasRenderingContext2D, stitch: Cell, cellIndex: number, rowIndex: number) {
+        const zX = cellIndex * cellSize;
+        const zY = rowIndex * cellSize;
         if (zX > size.width || zY > size.height) {
             return;
         }
-        const fontSize = cellSize / 2;
+        const fontSize = cellSize / 1.5;
 
         ctx.fillStyle = stitch.thread.color;
         ctx.fillRect(zX, zY, cellSize, cellSize);
 
-
         ctx.fillStyle = colorService.strRgbContrast(stitch.thread.color);
         ctx.shadowBlur = 0;
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillText(stitch.symbol, zX + (cellSize - fontSize) / 2, zY + (cellSize + fontSize / 2) / 2)
+        ctx.fillText(stitch.symbol, zX + (cellSize - fontSize / 2) / 2, zY + (cellSize + fontSize / 2) / 2)
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {
         grid.forEach((cells, rowIndex) => {
             cells.forEach((cell, colIndex) => {
-                if (cell) drawCell(ctx, cell, colIndex * CELL_SIZE, rowIndex * CELL_SIZE);
+                if (cell) drawCell(ctx, cell, colIndex, rowIndex);
             })
         });
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
-        const height = zoomed((grid.length) * CELL_SIZE);
-        const width = zoomed((grid[0].length) * CELL_SIZE);
+        const height = Math.min(size.height, grid.length * cellSize);
+        const width = Math.min(size.width, grid[0].length * cellSize);
         let i = 0;
         let j = 0;
         const strokeStyle = `rgba(0,0,0,${(zoom.scale - zoomSettings.min) / 2})`;
