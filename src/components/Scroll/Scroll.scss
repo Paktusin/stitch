@@ -1,0 +1,17 @@
+.scroll {
+  height: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  min-width: 17px;
+
+  &.horizontal {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: auto;
+    height: 17px;
+
+    .overflow {
+      height: 1px;
+    }
+  }
+}

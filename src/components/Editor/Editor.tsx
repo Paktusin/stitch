@@ -5,9 +5,7 @@ import {Panel} from "../Panel/Panel";
 import {Canvas} from "../Canvas/Canvas";
 import {useParams, useHistory} from "react-router-dom";
 import {projectService} from "../../services/dataService";
-import {StoreContext, DispatchContext, Store} from "../Store";
-import {ZoomLabel} from "../ZoomLabel/ZoomLabel";
-import {zoomSettings} from "../../types/zoom";
+import {StoreContext} from "../Store";
 import {RightPanel} from "../RightPanel/RightPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
 import {Direction, Stitch} from "../../types/stitch";
@@ -15,31 +13,10 @@ import {SymbolType} from "../../types/symbol";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
-    const canvasContainerRef = useRef<HTMLDivElement>(document.createElement('div'));
     const {id} = useParams();
     const history = useHistory();
-    const {zoom, symbol, stitchType} = useContext(StoreContext);
-    const {setZoom} = useContext(DispatchContext);
+    const {symbol, stitchType} = useContext(StoreContext);
 
-    function wheel(e: WheelEvent) {
-        if (e.altKey) {
-            const {scale} = zoom;
-            const newScale = (e.deltaY < 0 ? Math.min(zoomSettings.max, scale * zoomSettings.speed) : Math.max(zoomSettings.min, scale * (1 / zoomSettings.speed)));
-            if (newScale !== scale) {
-                setZoom({
-                    ...zoom,
-                    scale: newScale,
-                });
-            }
-        } else {
-            if (project) {
-                const scrollY = zoom.scrollY + e.deltaY / 20;
-                if (0 <= scrollY && scrollY <= project.height) {
-                    setZoom({...zoom, scrollY})
-                }
-            }
-        }
-    }
 
     function deleteThreadHandler(symbol: SymbolType) {
         if (project) {
@@ -104,13 +81,6 @@ export const Editor = () => {
     }, [])
 
     useEffect(() => {
-        canvasContainerRef.current.addEventListener('wheel', wheel);
-        return () => {
-            canvasContainerRef.current.removeEventListener('wheel', wheel);
-        }
-    }, [zoom, project]);
-
-    useEffect(() => {
         if (project) projectService.save(project).then(() => console.log('saved'))
     }, [project])
 
@@ -121,11 +91,8 @@ export const Editor = () => {
             <TopPanel/>
             <div className="mainArea">
                 <Panel size={64} vertical={true} border={"Right"}/>
-                <div className="canvasContainer" ref={canvasContainerRef}>
-                    <ZoomLabel/>
-                    <Canvas project={project}
-                            onCellClick={cellClickHandler}/>
-                </div>
+                <Canvas project={project}
+                        onCellClick={cellClickHandler}/>
                 <RightPanel palette={project.palette}
                             onChange={palette => setProject({...project, palette} as Project)}
                             onDelete={deleteThreadHandler}

@@ -28,7 +28,8 @@ export const DispatchContext = React.createContext<DispatchType>();
 export const Store = ({children}: any) => {
     const [state, dispatch] = React.useReducer(mainReducer, {
         ...initialState,
-        zoom: localStorageService.get('zoom', 1)
+        zoom: localStorageService.get('zoom', 1),
+        view: localStorageService.get('view', 'aida'),
     });
     const actionList = React.useMemo(() => ({
         setZoom: (value: Zoom) => dispatch({type: actionTypes.SET_ZOOM, value}),
@@ -38,8 +39,9 @@ export const Store = ({children}: any) => {
     }), [dispatch]);
 
     useEffect(() => {
-        localStorageService.put('zoom', state.zoom)
-    }, [state.zoom])
+        localStorageService.put('zoom', state.zoom);
+        localStorageService.put('view', state.view);
+    }, [state.zoom, state.view])
 
     return (
         <DispatchContext.Provider value={actionList}>

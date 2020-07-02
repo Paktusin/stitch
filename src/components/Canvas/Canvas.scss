@@ -1,5 +1,16 @@
 @import "src/variables";
 
-.Canvas {
-  background-color: $panelBackground;
+.canvasContainer {
+  position: relative;
+  display: flex;
+  flex: 1 auto;
+  width: 1px;
+  overflow: hidden;
+  flex-direction: column;
+
+  .Canvas {
+    background-color: $panelBackground;
+  }
 }
+
+
