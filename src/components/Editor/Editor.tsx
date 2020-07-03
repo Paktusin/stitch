@@ -92,7 +92,7 @@ export const Editor = () => {
 
     return (
         <div className="editor">
-            <TopPanel onChangeColor={changeColorHandler}/>
+            <TopPanel project={project} onChangeColor={changeColorHandler}/>
             <div className="mainArea">
                 <LeftPanel palette={project.palette}
                            onChange={palette => setProject({...project, palette} as Project)}

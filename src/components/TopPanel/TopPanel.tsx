@@ -8,7 +8,7 @@ import {Button, ButtonGroup} from "react-bootstrap";
 
 export type TopPanelType = {} & BackToolBarType
 
-export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor}) => {
+export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor, project}) => {
 
     const {setStitchType} = useContext(DispatchContext);
     const {stitchType} = useContext(StoreContext);
@@ -26,7 +26,7 @@ export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor}) => {
                 )}
             </ButtonGroup>
             <ViewToolBar/>
-            <BackToolBar onChangeColor={onChangeColor}/>
+            <BackToolBar project={project} onChangeColor={onChangeColor}/>
         </Panel>
     )
 }

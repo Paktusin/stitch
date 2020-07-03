@@ -1,13 +1,11 @@
 import React, {FunctionComponent, useContext, useEffect, useMemo, useState} from "react";
 import {Panel} from "../Panel/Panel";
-import {PanelButton} from "../PanleButton/PanelButton";
 import {Palette} from "../Palette/Palette";
 import {PaletteType} from "../../types/paletteType";
-import {Modal} from "../Modal/Modal";
 import {PaletteEdit} from "../PaleteEdit/PaletteEdit";
-import {DispatchContext, StoreContext} from "../Store";
 import {SymbolType, symbolTypes} from "../../types/symbol";
 import {Thread} from "../../types/thread";
+import {Modal} from "react-bootstrap";
 
 export interface RightPanelType {
     onChange: (palette: PaletteType) => void,
@@ -37,12 +35,13 @@ export const LeftPanel: FunctionComponent<RightPanelType> = ({palette = {}, onCh
     return (
         <Panel size={82} vertical={true} border={"Right"}>
             <Palette palette={palette} onDoubleClick={editHandler}/>
-            <Modal opened={modalOpened} onBackDrop={() => setModalOpened(false)}>
-                <PaletteEdit thread={palette[editSymbol]}
-                             onSave={saveHandler}
-                             onCancel={() => setModalOpened(false)}
-                             onDelete={deleteHandler}
-                />
+            <Modal show={modalOpened} onHide={() => setModalOpened(false)}>
+                <Modal.Body>
+                    <PaletteEdit thread={palette[editSymbol]}
+                                 onSave={saveHandler}
+                                 onCancel={() => setModalOpened(false)}
+                                 onDelete={deleteHandler}/>
+                </Modal.Body>
             </Modal>
         </Panel>
     )

@@ -35,6 +35,8 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
             }
         }
 
+        const threads = useMemo(() => vendors[vendor].filter(thread => !search.length || thread.name.indexOf(search) !== -1), [vendor, search])
+
         return (
             <div className="PaletteEdit">
                 <hr/>
@@ -47,7 +49,7 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
                 <label>Threads</label>
                 <input placeholder='search code...' value={search} onChange={e => setSearch(e.target.value)}/>
                 <div className="threadContainer">
-                    {vendors[vendor].map((thread, key) => {
+                    {threads.map((thread, key) => {
                             const color = colorService.strRgbContrast(thread.color);
                             return (
                                 <div
