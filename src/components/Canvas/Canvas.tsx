@@ -14,7 +14,7 @@ export interface CanvasPropsType {
     onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void
 }
 
-const CELL_SIZE = 4;
+export const CELL_SIZE = 4;
 
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
@@ -30,8 +30,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const scrolledY = useCallback((number: number) => Math.floor(number - zoom.scrollY), [zoom.scrollY]);
 
     const cellSize = useMemo(() => zoomed(CELL_SIZE), [zoomed]);
-    const renderHeight = useMemo(() => Math.min(size.height, project.height * cellSize), [size, project.height, cellSize]);
-    const renderWidth = useMemo(() => Math.min(size.width, project.width * cellSize), [size, project.width, cellSize]);
     const {grid, palette} = project;
 
     const aidaImgEl = document.querySelector('#aida') as HTMLImageElement;
@@ -102,7 +100,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                 i++;
             }
         }
-
         ctx.fillStyle = `${project.color}88`;
         ctx.fillRect(scrolledX(0), scrolledY(0), project.width * cellSize, project.height * cellSize);
     }
@@ -134,10 +131,28 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
     }
 
+    function drawPicture(ctx: CanvasRenderingContext2D) {
+        const {picture} = project;
+        if (picture && picture.data) {
+            const image = new Image();
+            image.src = picture.data;
+            ctx.globalAlpha = picture.opacity;
+            ctx.drawImage(
+                image,
+                scrolledX(picture.left * cellSize),
+                scrolledY(picture.top * cellSize),
+                picture.sWidth * cellSize,
+                picture.sHeight * cellSize
+            );
+            ctx.globalAlpha = 1;
+        }
+    }
+
     function drawAll() {
         const ctx = getCtx();
         ctx.clearRect(0, 0, size.width, size.height);
         drawBackGround(ctx);
+        drawPicture(ctx);
         drawCells(ctx);
         if (view === 'grid') drawGrid(ctx);
     }

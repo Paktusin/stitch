@@ -1,15 +1,17 @@
-import React, {FunctionComponent, useEffect, useRef, useState} from "react";
-import {Button, ButtonGroup, Card, Modal, Overlay} from "react-bootstrap";
+import React, {FunctionComponent, useRef, useState} from "react";
+import {Button, ButtonGroup, Modal, Overlay} from "react-bootstrap";
 import {ChromePicker, GithubPicker} from 'react-color';
 import {backColors} from "../../types/backColors";
-import {Project} from "../../types/project";
+import {Picture, Project} from "../../types/project";
+import {ImageEdit} from "../ImageEdit/ImageEdit";
 
 export interface BackToolBarType {
     onChangeColor: (color: string) => void,
+    onChangePicture: (picture?: Picture) => void,
     project: Project;
 }
 
-export const BackToolBar: FunctionComponent<BackToolBarType> = ({onChangeColor, project}) => {
+export const BackToolBar: FunctionComponent<BackToolBarType> = ({onChangeColor, project, onChangePicture}) => {
 
     const colorRef = useRef<any>(null);
     const colorCustomRef = useRef<any>(null);
@@ -50,7 +52,10 @@ export const BackToolBar: FunctionComponent<BackToolBarType> = ({onChangeColor, 
             <Button size={"sm"} onClick={() => setModal('image')}>Image</Button>
             <Modal show={modal === 'image'} onHide={() => setModal(null)}>
                 <Modal.Body>
-
+                    <ImageEdit project={project} onChange={picture => {
+                        setModal(null);
+                        onChangePicture(picture);
+                    }}/>
                 </Modal.Body>
             </Modal>
         </ButtonGroup>

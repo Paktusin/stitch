@@ -9,7 +9,18 @@ export class Project extends Entity {
     height: number = 100;
     width: number = 100;
     color: string = '#fff';
-    picture?: string;
+    picture?: Picture;
+}
+
+export interface Picture {
+    opacity: number;
+    left: number,
+    top: number,
+    height: number,
+    sHeight: number,
+    width: number,
+    sWidth: number,
+    data?: string;
 }
 
 
