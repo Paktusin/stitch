@@ -75,21 +75,44 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function drawCell(ctx: CanvasRenderingContext2D, cell: Cell, cellIndex: number, rowIndex: number) {
-        const zX = scrolledX(cellIndex * cellSize);
-        const zY = scrolledY(rowIndex * cellSize);
+        let zX = scrolledX(cellIndex * cellSize);
+        let zY = scrolledY(rowIndex * cellSize);
+        let cellHeight = cellSize, cellWidth = cellSize;
         const color = palette[cell.symbol].color;
         if (zX > size.width || zY > size.height) {
             return;
         }
-        const fontSize = cellSize / 1.5;
+        const contrastColor = colorService.strRgbContrast(color);
+        const directions = cell.stitch.direction.split('');
+        directions.forEach(direction => {
+            switch (direction) {
+                case "t":
+                    cellHeight /= 2;
+                    break;
+                case "b":
+                    zY += cellWidth / 2;
+                    cellHeight /= 2;
+                    break;
+                case "l":
+                    cellWidth /= 2;
+                    break;
+                case "r":
+                    zX += cellWidth / 2;
+                    cellWidth /= 2;
+                    break;
+            }
+        })
 
         ctx.fillStyle = color;
-        ctx.fillRect(zX, zY, cellSize, cellSize);
+        ctx.fillRect(zX, zY, cellWidth, cellHeight);
+    }
 
-        ctx.fillStyle = colorService.strRgbContrast(color);
+    function drawSymbol(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, symbol: string,) {
+        const fontSize = cellSize / 1.5;
+        ctx.fillStyle = color;
         ctx.shadowBlur = 0;
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillText(cell.symbol, zX + (cellSize - fontSize / 1.5) / 2, zY + (cellSize + fontSize / 1.5) / 2)
+        ctx.fillText(symbol, x, y)
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {

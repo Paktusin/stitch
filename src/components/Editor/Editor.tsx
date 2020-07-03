@@ -8,7 +8,7 @@ import {projectService} from "../../services/dataService";
 import {StoreContext} from "../Store";
 import {LeftPanel} from "../RightPanel/LeftPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
-import {Direction, Stitch} from "../../types/stitch";
+import {Direction, Stitch, StitchType} from "../../types/stitch";
 import {SymbolType} from "../../types/symbol";
 
 export const Editor = () => {
@@ -66,9 +66,20 @@ export const Editor = () => {
 
     const newStitch = useCallback((clickDirection: Direction): Stitch => {
         let direction: Direction = 'f';
-        switch (stitchType) {
+        switch (stitchType as StitchType) {
             case 'x':
                 direction = 'f';
+                break;
+            case 'vx':
+                direction = clickDirection.indexOf('l') !== -1 ? 'l' : 'r';
+                break;
+            case 'hx':
+                direction = clickDirection.indexOf('t') !== -1 ? 't' : 'b';
+                break;
+            case 'sx':
+            case 'qx':
+            case '3qx':
+                direction = clickDirection;
                 break;
         }
         return {type: stitchType, direction}
