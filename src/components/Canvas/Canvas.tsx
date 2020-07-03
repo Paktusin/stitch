@@ -190,14 +190,14 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     useEffect(() => {
         drawAll();
-    }, [grid, size, zoom, view]);
+    }, [project, size, zoom, view]);
 
     useEffect(() => {
         window.addEventListener('resize', resize);
         return () => {
             window.removeEventListener('resize', resize);
         }
-    }, [grid]);
+    }, [project]);
 
     useEffect(() => {
         ref.current.addEventListener('wheel', wheel);
