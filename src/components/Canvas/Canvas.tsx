@@ -1,4 +1,13 @@
-import React, {FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, {
+    FunctionComponent,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState, WheelEvent,
+    WheelEventHandler
+} from "react";
 import './Canvas.scss';
 import {Cell} from "../../types/cell";
 import {DispatchContext, StoreContext, StoreType} from "../Store";
@@ -34,6 +43,16 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     const aidaImgEl = document.querySelector('#aida') as HTMLImageElement;
     const counterImgEl = document.querySelector('#counter') as HTMLImageElement;
+    const image = useMemo(() => {
+        if (project.picture && project.picture.data) {
+            const image = new Image();
+            image.src = project.picture.data;
+            return image;
+        }
+        return null;
+    }, [project.picture])
+    let wheelTimeOut: any;
+
 
     function resize() {
         const parent = ref.current.parentElement;
@@ -133,9 +152,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     function drawPicture(ctx: CanvasRenderingContext2D) {
         const {picture} = project;
-        if (picture && picture.data) {
-            const image = new Image();
-            image.src = picture.data;
+        if (image && picture) {
             ctx.globalAlpha = picture.opacity;
             ctx.drawImage(
                 image,
@@ -162,44 +179,52 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         return ref.current.getContext('2d');
     }
 
-    function wheel(e: WheelEvent) {
-        if (e.altKey) {
-            const {scale} = zoom;
-            const newScale = (e.deltaY < 0 ? Math.min(zoomSettings.max, scale * zoomSettings.speed) : Math.max(zoomSettings.min, scale * (1 / zoomSettings.speed)));
-            if (newScale !== scale) {
-                setZoom({
-                    scrollX: 0,
-                    scrollY: 0,
-                    scale: newScale,
-                });
-            }
-        } else {
-            if (project) {
-                if (e.shiftKey) {
-                    const maxScrollX = project.width * cellSize - size.width;
-                    const newScrollX = zoom.scrollX + e.deltaY / 2;
+    function wheel(e: React.WheelEvent<HTMLCanvasElement>) {
+        clearTimeout(wheelTimeOut);
+        const {shiftKey, altKey, deltaY} = e;
+        wheelTimeOut = setTimeout(() => {
+            const delta = deltaY < 0 ? -150 : 150;
+            if (altKey) {
+                const {scale} = zoom;
+                const newScale = (delta < 0 ? Math.min(zoomSettings.max, scale * zoomSettings.speed) : Math.max(zoomSettings.min, scale * (1 / zoomSettings.speed)));
+                if (newScale !== scale) {
                     setZoom({
-                        ...zoom,
-                        scrollX: 0 > newScrollX ? 0 : newScrollX >= maxScrollX ? maxScrollX : newScrollX
-                    })
-                } else {
-                    const maxScrollY = project.height * cellSize - size.height;
-                    const newScrollY = zoom.scrollY + e.deltaY / 2;
-                    setZoom({
-                        ...zoom,
-                        scrollY: 0 > newScrollY ? 0 : newScrollY >= maxScrollY ? maxScrollY : newScrollY
-                    })
+                        scrollX: 0,
+                        scrollY: 0,
+                        scale: newScale,
+                    });
                 }
+            } else {
+                if (project) {
+                    if (shiftKey) {
+                        if (project.width * cellSize > size.width) {
+                            const maxScrollX = project.width * cellSize - size.width;
+                            const newScrollX = zoom.scrollX + delta;
+                            setZoom({
+                                ...zoom,
+                                scrollX: 0 > newScrollX ? 0 : newScrollX >= maxScrollX ? maxScrollX : newScrollX
+                            })
+                        }
+                    } else {
+                        if (project.height * cellSize > size.height) {
+                            const maxScrollY = project.height * cellSize - size.height;
+                            const newScrollY = zoom.scrollY + delta;
+                            setZoom({
+                                ...zoom,
+                                scrollY: 0 > newScrollY ? 0 : newScrollY >= maxScrollY ? maxScrollY : newScrollY
+                            })
+                        }
+                    }
 
+                }
             }
-        }
+        }, 30)
     }
 
     function scrollHandler(x = true, event: React.UIEvent<HTMLDivElement>) {
         const scroll = event.currentTarget[x ? 'scrollLeft' : 'scrollTop'];
         setZoom({...zoom, [x ? 'scrollX' : 'scrollY']: scroll});
     }
-
 
     useEffect(() => {
         resize();
@@ -216,13 +241,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
     }, [project]);
 
-    useEffect(() => {
-        ref.current.addEventListener('wheel', wheel);
-        return () => {
-            ref.current.removeEventListener('wheel', wheel);
-        }
-    }, [zoom, project]);
-
 
     return (
         <Child>
@@ -230,7 +248,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                     size={cellSize * project.height - size.height}/>
             <div className="scrollContainer">
                 <div className="canvasContainer">
-                    <canvas onContextMenu={e => clickHandler(e, true)}
+                    <canvas onWheel={wheel} onContextMenu={e => clickHandler(e, true)}
                             onClick={clickHandler}
                             height={size.height}
                             width={size.width}
