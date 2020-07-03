@@ -1,5 +1,7 @@
 import {StoreType} from "./Store";
 import {symbolTypes} from "../types/symbol";
+import {viewTypes} from "../types/viewType";
+import {stitchTypes} from "../types/stitch";
 
 export const actionTypes = {
     SET_ZOOM: 'SET_ZOOM',
@@ -10,9 +12,9 @@ export const actionTypes = {
 
 export const initialState: StoreType = {
     zoom: {scale: 1, scrollX: 0, scrollY: 0},
-    stitchType: 'x',
+    stitchType: stitchTypes[0],
     symbol: symbolTypes[0],
-    view: 'aida'
+    view: viewTypes[0]
 };
 
 export function mainReducer(state: StoreType, action: { type: string, value: any }) {

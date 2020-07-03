@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import {Zoom, zoomSettings} from "../types/zoom";
 import {actionTypes, initialState, mainReducer} from "./reducer";
-import {StitchType} from "../types/stitch";
+import {StitchType, stitchTypes} from "../types/stitch";
 import {localStorageService} from "../services/localStorageService";
-import {SymbolType} from "../types/symbol";
+import {SymbolType, symbolTypes} from "../types/symbol";
 import {ViewType} from "../types/viewType";
 
 export interface StoreType {
@@ -28,8 +28,10 @@ export const DispatchContext = React.createContext<DispatchType>();
 export const Store = ({children}: any) => {
     const [state, dispatch] = React.useReducer(mainReducer, {
         ...initialState,
-        zoom: localStorageService.get('zoom', 1),
-        view: localStorageService.get('view', 'aida'),
+        zoom: localStorageService.get('zoom', initialState.zoom),
+        view: localStorageService.get('view', initialState.view),
+        stitchType: localStorageService.get('stitchType',initialState.stitchType),
+        symbol: localStorageService.get('symbol', initialState.symbol),
     });
     const actionList = React.useMemo(() => ({
         setZoom: (value: Zoom) => dispatch({type: actionTypes.SET_ZOOM, value}),
@@ -41,7 +43,9 @@ export const Store = ({children}: any) => {
     useEffect(() => {
         localStorageService.put('zoom', state.zoom);
         localStorageService.put('view', state.view);
-    }, [state.zoom, state.view])
+        localStorageService.put('stitchType', state.stitchType);
+        localStorageService.put('symbol', state.symbol);
+    }, [state])
 
     return (
         <DispatchContext.Provider value={actionList}>

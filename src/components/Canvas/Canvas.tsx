@@ -47,8 +47,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     function clickHandler(event: React.MouseEvent<HTMLCanvasElement>, contextMenu = false) {
         event.preventDefault();
         const refRect = ref.current.getBoundingClientRect();
-        const cellX = (event.pageX - refRect.left) / cellSize
-        const rowY = (event.pageY - refRect.top) / cellSize
+        const cellX = (event.pageX - refRect.left + zoom.scrollX) / cellSize
+        const rowY = (event.pageY - refRect.top+ zoom.scrollY) / cellSize
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
@@ -211,8 +211,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         <Child>
             <Scroll scroll={zoom.scrollY} onScroll={e => scrollHandler(false, e)}
                     size={cellSize * project.height - size.height}/>
-            <div className="canvasContainer">
-                <div style={{display: 'flex', flex: '1 auto'}}>
+            <div className="scrollContainer">
+                <div className="canvasContainer">
                     <canvas onContextMenu={e => clickHandler(e, true)}
                             onClick={clickHandler}
                             height={size.height}
