@@ -48,7 +48,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         event.preventDefault();
         const refRect = ref.current.getBoundingClientRect();
         const cellX = (event.pageX - refRect.left + zoom.scrollX) / cellSize
-        const rowY = (event.pageY - refRect.top+ zoom.scrollY) / cellSize
+        const rowY = (event.pageY - refRect.top + zoom.scrollY) / cellSize
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
@@ -87,12 +87,11 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     function drawBackGround(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = 'white';
         ctx.fillRect(scrolledX(0), scrolledY(0), project.width * cellSize, project.height * cellSize);
-
         if (view === 'aida' || view === 'count') {
             let i = 0;
-            while (i <= project.height) {
+            while (i < project.height) {
                 let j = 0;
-                while (j <= project.width) {
+                while (j < project.width) {
                     ctx.drawImage(view === 'aida' ? aidaImgEl : counterImgEl,
                         scrolledX(j * cellSize),
                         scrolledY(i * cellSize),
@@ -103,6 +102,9 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                 i++;
             }
         }
+
+        ctx.fillStyle = `${project.color}88`;
+        ctx.fillRect(scrolledX(0), scrolledY(0), project.width * cellSize, project.height * cellSize);
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
@@ -160,14 +162,14 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
             if (project) {
                 if (e.shiftKey) {
                     const maxScrollX = project.width * cellSize - size.width;
-                    const newScrollX = zoom.scrollX + e.deltaY;
+                    const newScrollX = zoom.scrollX + e.deltaY / 2;
                     setZoom({
                         ...zoom,
                         scrollX: 0 > newScrollX ? 0 : newScrollX >= maxScrollX ? maxScrollX : newScrollX
                     })
                 } else {
                     const maxScrollY = project.height * cellSize - size.height;
-                    const newScrollY = zoom.scrollY + e.deltaY;
+                    const newScrollY = zoom.scrollY + e.deltaY / 2;
                     setZoom({
                         ...zoom,
                         scrollY: 0 > newScrollY ? 0 : newScrollY >= maxScrollY ? maxScrollY : newScrollY

@@ -7,3 +7,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+$btn-box-shadow: none;
+
+@import "~bootstrap/scss/bootstrap";
+
+.btn {
+  box-shadow: none !important;
+}

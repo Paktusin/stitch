@@ -15,7 +15,7 @@ export interface RightPanelType {
     palette: PaletteType
 }
 
-export const RightPanel: FunctionComponent<RightPanelType> = ({palette = {}, onChange, onDelete}) => {
+export const LeftPanel: FunctionComponent<RightPanelType> = ({palette = {}, onChange, onDelete}) => {
     const [modalOpened, setModalOpened] = useState(false);
     const [editSymbol, setEditSymbol] = useState<SymbolType>(symbolTypes[0]);
 
@@ -35,7 +35,7 @@ export const RightPanel: FunctionComponent<RightPanelType> = ({palette = {}, onC
     }
 
     return (
-        <Panel size={128} vertical={true} border={"Left"}>
+        <Panel size={82} vertical={true} border={"Right"}>
             <Palette palette={palette} onDoubleClick={editHandler}/>
             <Modal opened={modalOpened} onBackDrop={() => setModalOpened(false)}>
                 <PaletteEdit thread={palette[editSymbol]}

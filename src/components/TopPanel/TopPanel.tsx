@@ -1,26 +1,32 @@
-import React, {useContext} from "react";
+import React, {FunctionComponent, useContext} from "react";
 import {Panel} from "../Panel/Panel";
-import {PanelButton} from "../PanleButton/PanelButton";
 import {stitchTypes} from "../../types/stitch";
 import {DispatchContext, StoreContext} from "../Store";
 import {ViewToolBar} from "../ViewToolBar/ViewToolBar";
+import {BackToolBar, BackToolBarType} from "../BackPanel/BackToolBar";
+import {Button, ButtonGroup} from "react-bootstrap";
 
-export const TopPanel = () => {
+export type TopPanelType = {} & BackToolBarType
+
+export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor}) => {
 
     const {setStitchType} = useContext(DispatchContext);
     const {stitchType} = useContext(StoreContext);
 
     return (
-        <Panel size={32}>
-            {stitchTypes.map((type, index) =>
-                <PanelButton active={type === stitchType}
-                             key={index}
-                             onClick={e => setStitchType(type)}>
-                    {type}
-                </PanelButton>
-            )}
-
+        <Panel>
+            <ButtonGroup className={"mr-1"}>
+                {stitchTypes.map((type, index) =>
+                    <Button size={"sm"}
+                            active={type === stitchType}
+                            key={index}
+                            onClick={() => setStitchType(type)}>
+                        {type}
+                    </Button>
+                )}
+            </ButtonGroup>
             <ViewToolBar/>
+            <BackToolBar onChangeColor={onChangeColor}/>
         </Panel>
     )
 }

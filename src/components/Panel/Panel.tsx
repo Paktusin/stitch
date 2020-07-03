@@ -23,7 +23,7 @@ export const Panel: FunctionComponent<PanelType> =
             style['border' + border] = '1px solid #cecece'
         }
         return (
-            <div style={style} className={cls({vertical}, 'Panel')}>{children}</div>
+            <div style={style} className={cls({vertical}, 'Panel', 'p-1')}>{children}</div>
         )
     }
 

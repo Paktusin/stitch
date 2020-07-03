@@ -8,7 +8,7 @@ export class Project extends Entity {
     palette: PaletteType = {};
     height: number = 100;
     width: number = 100;
-    color: string = 'white';
+    color: string = '#fff';
     picture?: string;
 }
 

@@ -6,7 +6,7 @@ import {Canvas} from "../Canvas/Canvas";
 import {useParams, useHistory} from "react-router-dom";
 import {projectService} from "../../services/dataService";
 import {StoreContext} from "../Store";
-import {RightPanel} from "../RightPanel/RightPanel";
+import {LeftPanel} from "../RightPanel/LeftPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
 import {Direction, Stitch} from "../../types/stitch";
 import {SymbolType} from "../../types/symbol";
@@ -60,6 +60,10 @@ export const Editor = () => {
         }
     }
 
+    function changeColorHandler(color: string) {
+        setProject({...project, color} as Project)
+    }
+
     const newStitch = useCallback((clickDirection: Direction): Stitch => {
         let direction: Direction = 'f';
         switch (stitchType) {
@@ -88,15 +92,14 @@ export const Editor = () => {
 
     return (
         <div className="editor">
-            <TopPanel/>
+            <TopPanel onChangeColor={changeColorHandler}/>
             <div className="mainArea">
-                <Panel size={64} vertical={true} border={"Right"}/>
+                <LeftPanel palette={project.palette}
+                           onChange={palette => setProject({...project, palette} as Project)}
+                           onDelete={deleteThreadHandler}
+                />
                 <Canvas project={project}
                         onCellClick={cellClickHandler}/>
-                <RightPanel palette={project.palette}
-                            onChange={palette => setProject({...project, palette} as Project)}
-                            onDelete={deleteThreadHandler}
-                />
             </div>
         </div>
     );
