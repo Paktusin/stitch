@@ -11,7 +11,7 @@ import React, {
 import './Canvas.scss';
 import {Cell} from "../../types/cell";
 import {DispatchContext, StoreContext, StoreType} from "../Store";
-import {Direction} from "../../types/stitch";
+import {Direction, StitchType} from "../../types/stitch";
 import {zoomSettings} from "../../types/zoom";
 import {colorService} from "../../services/colorService";
 import {Project} from "../../types/project";
@@ -39,6 +39,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const scrolledY = useCallback((number: number) => Math.floor(number - zoom.scrollY), [zoom.scrollY]);
 
     const cellSize = useMemo(() => zoomed(CELL_SIZE), [zoomed]);
+    const fontSize = cellSize / 1.5;
     const {grid, palette} = project;
 
     const aidaImgEl = document.querySelector('#aida') as HTMLImageElement;
@@ -78,41 +79,76 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         let zX = scrolledX(cellIndex * cellSize);
         let zY = scrolledY(rowIndex * cellSize);
         let cellHeight = cellSize, cellWidth = cellSize;
+        let fontX = zX + cellWidth / 3;
+        let fontY = zY + cellWidth / 1.5;
         const color = palette[cell.symbol].color;
         if (zX > size.width || zY > size.height) {
             return;
         }
         const contrastColor = colorService.strRgbContrast(color);
         const directions = cell.stitch.direction.split('');
-        directions.forEach(direction => {
-            switch (direction) {
-                case "t":
-                    cellHeight /= 2;
-                    break;
-                case "b":
-                    zY += cellWidth / 2;
-                    cellHeight /= 2;
-                    break;
-                case "l":
-                    cellWidth /= 2;
-                    break;
-                case "r":
-                    zX += cellWidth / 2;
-                    cellWidth /= 2;
-                    break;
-            }
-        })
-
         ctx.fillStyle = color;
-        ctx.fillRect(zX, zY, cellWidth, cellHeight);
+        if (['qx', '3qx'].indexOf(cell.stitch.type) !== -1) {
+            drawQx(ctx, zX, zY, cell);
+            if (cell.stitch.type === '3qx') {
+                fontX = zX + cellWidth / 2;
+                fontY = zY + cellHeight / 1.2;
+            } else {
+                fontX = zX;
+                fontY = zY + cellHeight / 3;
+            }
+            drawSymbol(ctx, fontX, fontY, contrastColor, cell.symbol, fontSize / 1.3);
+        } else {
+            directions.forEach(direction => {
+                switch (direction) {
+                    case "t":
+                        cellHeight /= 2;
+                        fontY = zY + cellHeight / 2 + fontSize / 4;
+                        break;
+                    case "b":
+                        zY += cellWidth / 2;
+                        cellHeight /= 2;
+                        fontY = zY + cellHeight / 2 + fontSize / 4;
+                        break;
+                    case "l":
+                        cellWidth /= 2;
+                        fontX = zX;
+                        break;
+                    case "r":
+                        zX += cellWidth / 2;
+                        fontX = zX;
+                        cellWidth /= 2;
+                        break;
+                }
+            })
+            ctx.fillRect(zX, zY, cellWidth, cellHeight);
+            drawSymbol(ctx, fontX, fontY, contrastColor, cell.symbol);
+        }
     }
 
-    function drawSymbol(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, symbol: string,) {
-        const fontSize = cellSize / 1.5;
+    function drawSymbol(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, symbol: string, fS = fontSize) {
         ctx.fillStyle = color;
         ctx.shadowBlur = 0;
-        ctx.font = `${fontSize}px Arial`;
+        ctx.font = `${fS}px Arial`;
         ctx.fillText(symbol, x, y)
+    }
+
+    function drawQx(ctx: CanvasRenderingContext2D, x: number, y: number, cell: Cell) {
+        ctx.beginPath();
+        if (cell.stitch.type === '3qx') {
+            ctx.moveTo(x, y + cellSize);
+            ctx.lineTo(x, y + cellSize * 0.75);
+            ctx.lineTo(x + cellSize * 0.75, y);
+            ctx.lineTo(x + cellSize, y);
+            ctx.lineTo(x + cellSize, y + cellSize);
+            ctx.lineTo(x, y + cellSize);
+        } else {
+            ctx.moveTo(x, y + cellSize * 0.75);
+            ctx.lineTo(x, y);
+            ctx.lineTo(x + cellSize * 0.75, y);
+            ctx.lineTo(x, y + cellSize * 0.75);
+        }
+        ctx.fill();
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {
