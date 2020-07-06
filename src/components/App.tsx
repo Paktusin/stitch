@@ -15,14 +15,14 @@ export const App = () => {
         <Store>
             <Router>
                 <Switch>
-                    <Route exact path="/">
-                        <Home/>
-                    </Route>
                     <Route path="/edit/:id?">
                         <ProjectEdit/>
                     </Route>
                     <Route exact path="/draw/:id">
                         <Editor/>
+                    </Route>
+                    <Route path="/">
+                        <Home/>
                     </Route>
                 </Switch>
             </Router>
