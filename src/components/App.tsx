@@ -1,8 +1,7 @@
 import React from "react";
 import {
-    BrowserRouter as Router,
     Switch,
-    Route
+    Route, HashRouter
 } from "react-router-dom";
 import {ProjectEdit} from "./ProjectEdit/ProjectEdit";
 import {Home} from "./Home/Home";
@@ -13,19 +12,19 @@ import {Store} from "./Store";
 export const App = () => {
     return (
         <Store>
-            <Router>
+            <HashRouter>
                 <Switch>
                     <Route path="/edit/:id?">
                         <ProjectEdit/>
                     </Route>
-                    <Route exact path="/draw/:id">
+                    <Route path="/draw/:id">
                         <Editor/>
                     </Route>
                     <Route path="/">
                         <Home/>
                     </Route>
                 </Switch>
-            </Router>
+            </HashRouter>
         </Store>
     )
 }
