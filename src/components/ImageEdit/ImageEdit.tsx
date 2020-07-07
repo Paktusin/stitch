@@ -33,8 +33,8 @@ export const ImageEdit: FunctionComponent<ImageEditProps> = ({project, onChange}
                                 ...picture,
                                 data: e.target.result as string,
                                 left: 0, top: 0, height: image.height, width: image.width,
-                                sHeight: aspect >= 1 ? project.width : Math.floor(aspect * project.height),
-                                sWidth: aspect < 1 ? project.height : Math.floor(project.width / aspect),
+                                sWidth: aspect >= 1 ? project.width : Math.floor(aspect * project.height),
+                                sHeight: aspect < 1 ? project.height : Math.floor(project.width / aspect),
                             })
                         }
                     }
