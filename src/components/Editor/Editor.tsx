@@ -1,7 +1,6 @@
 import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import './Editor.scss';
 import {GridType, Project} from "../../types/project";
-import {Panel} from "../Panel/Panel";
 import {Canvas} from "../Canvas/Canvas";
 import {useParams, useHistory} from "react-router-dom";
 import {projectService} from "../../services/dataService";
@@ -22,16 +21,17 @@ export const Editor = () => {
         if (project) {
             Object.keys(project.grid).forEach((rowIndex: any) => {
                 Object.keys(project.grid[rowIndex]).forEach((colIndex: any) => {
-                    const cell = project.grid[rowIndex][colIndex];
-                    if (cell && cell.symbol === symbol) {
+                    const cell = project.grid[rowIndex][colIndex].filter(stitch => stitch.symbol !== symbol);
+                    if (!cell.length) {
                         deleteCell(project.grid, rowIndex, colIndex)
+                    } else {
+                        project.grid[rowIndex][colIndex] = [...cell];
                     }
                 })
             })
             const newPalette = {...project.palette}
             delete newPalette[symbol];
             setProject({...project, palette: newPalette, grid: {...project.grid}} as Project);
-
         }
     }
 
@@ -49,10 +49,7 @@ export const Editor = () => {
         if (!newGrid[rowIndex]) newGrid[rowIndex] = {};
         if (symbol && project.palette[symbol]) {
             if (!contextMenu) {
-                newGrid[rowIndex][colIndex] = {
-                    symbol: symbol,
-                    stitch: newStitch(direction)
-                }
+                newGrid[rowIndex][colIndex] = newStitch(symbol, direction, newGrid[rowIndex][colIndex] || [])
             } else {
                 deleteCell(newGrid, rowIndex, colIndex)
             }
@@ -64,12 +61,9 @@ export const Editor = () => {
         setProject({...project, color} as Project)
     }
 
-    const newStitch = useCallback((clickDirection: Direction): Stitch => {
+    const newStitch = useCallback((symbol: SymbolType, clickDirection: Direction, stitches: Stitch[]): Stitch[] => {
         let direction: Direction = 'f';
         switch (stitchType as StitchType) {
-            case 'x':
-                direction = 'f';
-                break;
             case 'vx':
                 direction = clickDirection.indexOf('l') !== -1 ? 'l' : 'r';
                 break;
@@ -82,7 +76,7 @@ export const Editor = () => {
                 direction = clickDirection;
                 break;
         }
-        return {type: stitchType, direction}
+        return [{symbol, type: stitchType, direction}]
     }, [stitchType])
 
     useEffect(() => {

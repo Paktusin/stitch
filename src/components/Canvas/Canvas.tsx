@@ -10,7 +10,7 @@ import React, {
 import './Canvas.scss';
 import {Cell} from "../../types/cell";
 import {DispatchContext, StoreContext, StoreType} from "../Store";
-import {Direction, StitchType} from "../../types/stitch";
+import {Direction, Stitch, StitchType} from "../../types/stitch";
 import {zoomSettings} from "../../types/zoom";
 import {colorService} from "../../services/colorService";
 import {Project} from "../../types/project";
@@ -78,16 +78,18 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     function drawCell(ctx: CanvasRenderingContext2D, cell: Cell, cellIndex: number, rowIndex: number) {
         const zX = scrolledX(cellIndex * cellSize);
         const zY = scrolledY(rowIndex * cellSize);
-        const color = palette[cell.symbol].color;
         if (zX > size.width || zY > size.height) {
             return;
         }
-        const contrastColor = colorService.strRgbContrast(color);
-        ctx.fillStyle = color;
-        ctx.fill(get2DPath(zX, zY, cell));
-        const symbolPosArr = symbolPositions[cell.stitch.type][cell.stitch.direction];
-        symbolPosArr.forEach(symbolPos => {
-            drawSymbol(ctx, zX + cellSize * symbolPos[0], zY + cellSize * symbolPos[1], contrastColor, cell.symbol);
+        cell.forEach(stitch=>{
+            const color = palette[stitch.symbol].color;
+            const contrastColor = colorService.strRgbContrast(color);
+            ctx.fillStyle = color;
+            ctx.fill(get2DPath(zX, zY, stitch));
+            const symbolPosArr = symbolPositions[stitch.type][stitch.direction];
+            symbolPosArr.forEach(symbolPos => {
+                drawSymbol(ctx, zX + cellSize * symbolPos[0], zY + cellSize * symbolPos[1], contrastColor, stitch.symbol);
+            })
         })
     }
 
@@ -99,8 +101,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         ctx.fillText(symbol, x, y)
     }
 
-    function get2DPath(x: number, y: number, cell: Cell) {
-        const arrPath = canvasPaths[cell.stitch.type][cell.stitch.direction];
+    function get2DPath(x: number, y: number, stitch: Stitch) {
+        const arrPath = canvasPaths[stitch.type][stitch.direction];
         const str = [...arrPath, arrPath[0]].map((el, index) => {
             return `${index === 0 ? 'm' : 'L'}${x + el[0] * cellSize},${y + el[1] * cellSize}`;
         }).join('') + 'z';

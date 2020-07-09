@@ -1,6 +1,9 @@
+import {SymbolType} from "./symbol";
+
 export interface Stitch {
     direction: Direction
     type: StitchType;
+    symbol: SymbolType;
 }
 
 export const stitchTypes = ['x', 'vx', 'hx', 'sx', 'qx', '3qx', '\\', '/']
