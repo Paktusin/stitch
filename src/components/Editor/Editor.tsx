@@ -9,6 +9,8 @@ import {LeftPanel} from "../RightPanel/LeftPanel";
 import {TopPanel} from "../TopPanel/TopPanel";
 import {Direction, Stitch, StitchType} from "../../types/stitch";
 import {SymbolType} from "../../types/symbol";
+import {Cell} from "../../types/cell";
+import {paths} from "../../types/paths";
 
 export const Editor = () => {
     const [project, setProject] = useState<Project>();
@@ -49,7 +51,7 @@ export const Editor = () => {
         if (!newGrid[rowIndex]) newGrid[rowIndex] = {};
         if (symbol && project.palette[symbol]) {
             if (!contextMenu) {
-                newGrid[rowIndex][colIndex] = newStitch(symbol, direction, newGrid[rowIndex][colIndex] || [])
+                newGrid[rowIndex][colIndex] = newCell(symbol, direction, newGrid[rowIndex][colIndex] || [])
             } else {
                 deleteCell(newGrid, rowIndex, colIndex)
             }
@@ -61,22 +63,36 @@ export const Editor = () => {
         setProject({...project, color} as Project)
     }
 
-    const newStitch = useCallback((symbol: SymbolType, clickDirection: Direction, stitches: Stitch[]): Stitch[] => {
-        let direction: Direction = 'f';
+    const newCell = useCallback((symbol: SymbolType, clickDirection: Direction, cell: Cell): Cell => {
+        const keys = Object.keys(paths[stitchType]);
+        const regexp = /.{1,2}/g;
+        let directions: any = [];
         switch (stitchType as StitchType) {
             case 'vx':
-                direction = clickDirection.indexOf('l') !== -1 ? 'l' : 'r';
+                directions = clickDirection.indexOf('l') !== -1 ? keys[0].match(regexp) : keys[1].match(regexp);
                 break;
             case 'hx':
-                direction = clickDirection.indexOf('t') !== -1 ? 't' : 'b';
+                directions = clickDirection.indexOf('t') !== -1 ? keys[0].match(regexp) : keys[1].match(regexp);
                 break;
             case 'sx':
             case 'qx':
+                directions = [clickDirection];
+                break;
             case '3qx':
-                direction = clickDirection;
+                const foundKey = keys.find(key => (key.match(regexp) as any)[1] === clickDirection) as string;
+                directions = foundKey.match(regexp);
+                break;
+            case'/':
+            case'\\':
+            case'x':
+                directions = keys[0].match(regexp)
                 break;
         }
-        return [{symbol, type: stitchType, direction}]
+        const newStitch: Stitch = {symbol, type: stitchType, directions};
+        const newCell = [...cell.filter(stitch => {
+            return !stitch.directions.filter(direction => directions.find((newDirection: Direction) => newDirection === direction)).length
+        }), newStitch];
+        return newCell;
     }, [stitchType])
 
     useEffect(() => {

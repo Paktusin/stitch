@@ -16,7 +16,7 @@ import {colorService} from "../../services/colorService";
 import {Project} from "../../types/project";
 import {Scroll} from "../Scroll/Scroll";
 import {Child} from "../Child";
-import {canvasPaths, symbolPositions} from "../../types/canvasPaths";
+import {paths} from "../../types/paths";
 
 export interface CanvasPropsType {
     project: Project;
@@ -81,12 +81,12 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         if (zX > size.width || zY > size.height) {
             return;
         }
-        cell.forEach(stitch=>{
+        cell.forEach(stitch => {
             const color = palette[stitch.symbol].color;
             const contrastColor = colorService.strRgbContrast(color);
             ctx.fillStyle = color;
             ctx.fill(get2DPath(zX, zY, stitch));
-            const symbolPosArr = symbolPositions[stitch.type][stitch.direction];
+            const symbolPosArr = paths[stitch.type][stitch.directions.join('')].symbol;
             symbolPosArr.forEach(symbolPos => {
                 drawSymbol(ctx, zX + cellSize * symbolPos[0], zY + cellSize * symbolPos[1], contrastColor, stitch.symbol);
             })
@@ -102,7 +102,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function get2DPath(x: number, y: number, stitch: Stitch) {
-        const arrPath = canvasPaths[stitch.type][stitch.direction];
+        const arrPath = paths[stitch.type][stitch.directions.join('')].path;
         const str = [...arrPath, arrPath[0]].map((el, index) => {
             return `${index === 0 ? 'm' : 'L'}${x + el[0] * cellSize},${y + el[1] * cellSize}`;
         }).join('') + 'z';
