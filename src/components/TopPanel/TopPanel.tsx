@@ -5,6 +5,7 @@ import {DispatchContext, StoreContext} from "../Store";
 import {ViewToolBar} from "../ViewToolBar/ViewToolBar";
 import {BackToolBar, BackToolBarType} from "../BackPanel/BackToolBar";
 import {Button, ButtonGroup} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 export type TopPanelType = {} & BackToolBarType
 
@@ -30,6 +31,7 @@ export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor, projec
                          onChangeColor={onChangeColor}
                          onChangePicture={onChangePicture}
             />
+            <Link to={`/print/${project.id}`} target={'_blank'} component={Button}>Print</Link>
         </Panel>
     )
 }
