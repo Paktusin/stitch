@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/stitch/static/css/main.f27ab55f.chunk.css",
-    "main.js": "/stitch/static/js/main.e4f59fc6.chunk.js",
-    "main.js.map": "/stitch/static/js/main.e4f59fc6.chunk.js.map",
+    "main.css": "/stitch/static/css/main.5a9dce71.chunk.css",
+    "main.js": "/stitch/static/js/main.d8b760ae.chunk.js",
+    "main.js.map": "/stitch/static/js/main.d8b760ae.chunk.js.map",
     "runtime-main.js": "/stitch/static/js/runtime-main.a1e2fac2.js",
     "runtime-main.js.map": "/stitch/static/js/runtime-main.a1e2fac2.js.map",
-    "static/js/2.a84bcf7c.chunk.js": "/stitch/static/js/2.a84bcf7c.chunk.js",
-    "static/js/2.a84bcf7c.chunk.js.map": "/stitch/static/js/2.a84bcf7c.chunk.js.map",
+    "static/js/2.778af241.chunk.js": "/stitch/static/js/2.778af241.chunk.js",
+    "static/js/2.778af241.chunk.js.map": "/stitch/static/js/2.778af241.chunk.js.map",
     "index.html": "/stitch/index.html",
-    "precache-manifest.aebbc832e24e232591b242ce6af33f86.js": "/stitch/precache-manifest.aebbc832e24e232591b242ce6af33f86.js",
+    "precache-manifest.0c6690794f37f959d9044696f67a015f.js": "/stitch/precache-manifest.0c6690794f37f959d9044696f67a015f.js",
     "service-worker.js": "/stitch/service-worker.js",
-    "static/css/main.f27ab55f.chunk.css.map": "/stitch/static/css/main.f27ab55f.chunk.css.map",
-    "static/js/2.a84bcf7c.chunk.js.LICENSE.txt": "/stitch/static/js/2.a84bcf7c.chunk.js.LICENSE.txt"
+    "static/css/main.5a9dce71.chunk.css.map": "/stitch/static/css/main.5a9dce71.chunk.css.map",
+    "static/js/2.778af241.chunk.js.LICENSE.txt": "/stitch/static/js/2.778af241.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a1e2fac2.js",
-    "static/js/2.a84bcf7c.chunk.js",
-    "static/css/main.f27ab55f.chunk.css",
-    "static/js/main.e4f59fc6.chunk.js"
+    "static/js/2.778af241.chunk.js",
+    "static/css/main.5a9dce71.chunk.css",
+    "static/js/main.d8b760ae.chunk.js"
   ]
 }
