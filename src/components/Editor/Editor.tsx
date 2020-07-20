@@ -121,8 +121,7 @@ export const Editor = () => {
                            onChange={palette => setProject({...project, palette} as Project)}
                            onDelete={deleteThreadHandler}
                 />
-                <Canvas project={project}
-                        onCellClick={cellClickHandler}/>
+                <Canvas project={project} onCellClick={cellClickHandler}/>
             </div>
         </div>
     );

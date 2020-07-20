@@ -8,6 +8,7 @@ import {Home} from "./Home/Home";
 import {Editor} from "./Editor/Editor";
 import {Store} from "./Store";
 import {Print} from "./Print/Print";
+import {Test} from "./Test/Test";
 
 
 export const App = () => {
@@ -23,6 +24,9 @@ export const App = () => {
                     </Route>
                     <Route path="/print/:id">
                         <Print/>
+                    </Route>
+                    <Route path="/test">
+                        <Test/>
                     </Route>
                     <Route path="/">
                         <Home/>

@@ -24,6 +24,8 @@ export interface CanvasPropsType {
 }
 
 export const CELL_SIZE = 4;
+let mouseButton: any;
+let lastCell: any;
 
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
@@ -52,8 +54,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
         return null;
     }, [project.picture])
-    let wheelTimeOut: any;
 
+    let wheelTimeOut: any;
 
     function resize() {
         const parent = ref.current.parentElement;
@@ -62,16 +64,19 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
     }
 
-    function clickHandler(event: React.MouseEvent<HTMLCanvasElement>, contextMenu = false) {
-        event.preventDefault();
+    function emitCell(pageX: number, pageY: number) {
+        if (mouseButton === undefined) return;
         const refRect = ref.current.getBoundingClientRect();
-        const cellX = (event.pageX - refRect.left + zoom.scrollX) / cellSize
-        const rowY = (event.pageY - refRect.top + zoom.scrollY) / cellSize
+        const cellX = (pageX - refRect.left + zoom.scrollX) / cellSize
+        const rowY = (pageY - refRect.top + zoom.scrollY) / cellSize
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
-        const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-        if (rowIndex <= project.height && cellIndex <= project.width) {
-            onCellClick && onCellClick(rowIndex, cellIndex, direction, contextMenu)
+        if (lastCell !== `${cellIndex}-${rowIndex}-${mouseButton}`) {
+            const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
+            if (rowIndex <= project.height && cellIndex <= project.width) {
+                lastCell = `${cellIndex}-${rowIndex}-${mouseButton}`
+                onCellClick && onCellClick(rowIndex, cellIndex, direction, mouseButton === 2);
+            }
         }
     }
 
@@ -258,6 +263,19 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
     }, [project]);
 
+    function mouseDownHandler(event: React.MouseEvent) {
+        event.preventDefault();
+        if (event.type === 'mousedown') {
+            mouseButton = event.button;
+            emitCell(event.pageX, event.pageY);
+        } else {
+            mouseButton = undefined;
+        }
+    }
+
+    function mouseMoveHandler(event: React.MouseEvent) {
+        emitCell(event.pageX, event.pageY);
+    }
 
     return (
         <Child>
@@ -265,8 +283,11 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                     size={cellSize * project.height - size.height}/>
             <div className="scrollContainer">
                 <div className="canvasContainer">
-                    <canvas onWheel={wheel} onContextMenu={e => clickHandler(e, true)}
-                            onClick={clickHandler}
+                    <canvas onWheel={wheel}
+                            onContextMenu={e => e.preventDefault()}
+                            onMouseMove={mouseMoveHandler}
+                            onMouseDown={mouseDownHandler}
+                            onMouseUp={mouseDownHandler}
                             height={size.height}
                             width={size.width}
                             ref={ref}
