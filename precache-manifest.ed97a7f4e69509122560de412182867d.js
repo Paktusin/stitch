@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ff91e5dc80f582d8daf439afc21ef910",
+    "revision": "118e4b503dc53a2f3b01039b64c59370",
     "url": "/stitch/index.html"
   },
   {
-    "revision": "73dac001697b2927f3ab",
+    "revision": "d3c6393890fa61a48fa1",
     "url": "/stitch/static/css/main.5a9dce71.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/stitch/static/js/2.778af241.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "73dac001697b2927f3ab",
-    "url": "/stitch/static/js/main.d8b760ae.chunk.js"
+    "revision": "d3c6393890fa61a48fa1",
+    "url": "/stitch/static/js/main.b0038f26.chunk.js"
   },
   {
     "revision": "62424200748dac8f01dd",
