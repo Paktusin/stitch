@@ -25,7 +25,6 @@ export interface CanvasPropsType {
 
 export const CELL_SIZE = 4;
 let mouseButton: any;
-let lastCell: any;
 
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
@@ -71,12 +70,9 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         const rowY = (pageY - refRect.top + zoom.scrollY) / cellSize
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
-        if (lastCell !== `${cellIndex}-${rowIndex}-${mouseButton}`) {
-            const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-            if (rowIndex <= project.height && cellIndex <= project.width) {
-                lastCell = `${cellIndex}-${rowIndex}-${mouseButton}`
-                onCellClick && onCellClick(rowIndex, cellIndex, direction, mouseButton === 2);
-            }
+        const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
+        if (rowIndex <= project.height && cellIndex <= project.width) {
+            onCellClick && onCellClick(rowIndex, cellIndex, direction, mouseButton === 2);
         }
     }
 
