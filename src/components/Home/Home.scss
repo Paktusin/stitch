@@ -1,0 +1,18 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+  flex-direction: column;
+
+  .projects {
+    min-width: 500px;
+    margin: 0 auto;
+
+    .del-btn{
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+    }
+  }
+}

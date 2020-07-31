@@ -8,9 +8,10 @@ import {ViewType} from "../types/viewType";
 
 export interface StoreType {
     zoom: Zoom,
-    stitchType: StitchType
-    symbol: SymbolType
-    view: ViewType
+    stitchType: StitchType,
+    symbol: SymbolType,
+    view: ViewType,
+    showSymbols: boolean,
 }
 
 export interface DispatchType {
@@ -18,6 +19,7 @@ export interface DispatchType {
     setStitchType: (value: StitchType) => void,
     setSymbol: (value: SymbolType) => void,
     setView: (value: ViewType) => void,
+    setShowSymbols: (value: boolean) => void,
 }
 
 // @ts-ignore
@@ -32,12 +34,14 @@ export const Store = ({children}: any) => {
         view: localStorageService.get('view', initialState.view),
         stitchType: localStorageService.get('stitchType',initialState.stitchType),
         symbol: localStorageService.get('symbol', initialState.symbol),
+        showSymbols: localStorageService.get('showSymbols', initialState.showSymbols),
     });
     const actionList = React.useMemo(() => ({
         setZoom: (value: Zoom) => dispatch({type: actionTypes.SET_ZOOM, value}),
         setSymbol: (value: StitchType) => dispatch({type: actionTypes.SET_SYMBOL, value}),
         setStitchType: (value: StitchType) => dispatch({type: actionTypes.SET_STITCH_TYPE, value}),
         setView: (value: ViewType) => dispatch({type: actionTypes.SET_VIEW, value}),
+        setShowSymbols: (value: boolean) => dispatch({type: actionTypes.SET_SHOW_SYMBOLS, value}),
     }), [dispatch]);
 
     useEffect(() => {
@@ -45,6 +49,7 @@ export const Store = ({children}: any) => {
         localStorageService.put('view', state.view);
         localStorageService.put('stitchType', state.stitchType);
         localStorageService.put('symbol', state.symbol);
+        localStorageService.put('showSymbols', state.showSymbols);
     }, [state])
 
     return (

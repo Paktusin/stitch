@@ -90,7 +90,7 @@ export const ImageEdit: FunctionComponent<ImageEditProps> = ({project, onChange}
                 <Form.Group>
                     <Form.Label>offset X</Form.Label>
                     <Form.Control type={'number'}
-                                  min={0}
+                                  min={-picture.sWidth}
                                   max={maxSize.width}
                                   value={picture.left}
                                   onChange={e => setPicture({...picture, left: parseInt(e.target.value)})}/>
@@ -98,7 +98,7 @@ export const ImageEdit: FunctionComponent<ImageEditProps> = ({project, onChange}
                 <Form.Group>
                     <Form.Label>offset Y</Form.Label>
                     <Form.Control type={'number'}
-                                  min={0}
+                                  min={-picture.sHeight}
                                   max={maxSize.height}
                                   value={picture.top}
                                   onChange={e => setPicture({...picture, top: parseInt(e.target.value)})}/>

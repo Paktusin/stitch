@@ -30,7 +30,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
                                                                onCellClick
                                                            }) => {
-    const {zoom, view} = useContext(StoreContext);
+    const {zoom, view, showSymbols} = useContext(StoreContext);
     const {setZoom} = useContext(DispatchContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
