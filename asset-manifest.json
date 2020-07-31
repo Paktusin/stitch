@@ -1,22 +1,29 @@
 {
   "files": {
-    "main.css": "/stitch/static/css/main.5a9dce71.chunk.css",
-    "main.js": "/stitch/static/js/main.b0038f26.chunk.js",
-    "main.js.map": "/stitch/static/js/main.b0038f26.chunk.js.map",
+    "main.css": "/stitch/static/css/main.5c3508c9.chunk.css",
+    "main.js": "/stitch/static/js/main.48673c7f.chunk.js",
+    "main.js.map": "/stitch/static/js/main.48673c7f.chunk.js.map",
     "runtime-main.js": "/stitch/static/js/runtime-main.a1e2fac2.js",
     "runtime-main.js.map": "/stitch/static/js/runtime-main.a1e2fac2.js.map",
-    "static/js/2.778af241.chunk.js": "/stitch/static/js/2.778af241.chunk.js",
-    "static/js/2.778af241.chunk.js.map": "/stitch/static/js/2.778af241.chunk.js.map",
+    "static/js/2.ef7f0391.chunk.js": "/stitch/static/js/2.ef7f0391.chunk.js",
+    "static/js/2.ef7f0391.chunk.js.map": "/stitch/static/js/2.ef7f0391.chunk.js.map",
     "index.html": "/stitch/index.html",
-    "precache-manifest.ed97a7f4e69509122560de412182867d.js": "/stitch/precache-manifest.ed97a7f4e69509122560de412182867d.js",
+    "precache-manifest.d99315f17127067f756d01d477c041ce.js": "/stitch/precache-manifest.d99315f17127067f756d01d477c041ce.js",
     "service-worker.js": "/stitch/service-worker.js",
-    "static/css/main.5a9dce71.chunk.css.map": "/stitch/static/css/main.5a9dce71.chunk.css.map",
-    "static/js/2.778af241.chunk.js.LICENSE.txt": "/stitch/static/js/2.778af241.chunk.js.LICENSE.txt"
+    "static/css/main.5c3508c9.chunk.css.map": "/stitch/static/css/main.5c3508c9.chunk.css.map",
+    "static/js/2.ef7f0391.chunk.js.LICENSE.txt": "/stitch/static/js/2.ef7f0391.chunk.js.LICENSE.txt",
+    "static/media/half.svg": "/stitch/static/media/half.38cce50b.svg",
+    "static/media/hx.svg": "/stitch/static/media/hx.184f0745.svg",
+    "static/media/qx.svg": "/stitch/static/media/qx.cfab1280.svg",
+    "static/media/qx3.svg": "/stitch/static/media/qx3.8a80f529.svg",
+    "static/media/sx.svg": "/stitch/static/media/sx.efdbea92.svg",
+    "static/media/vx.svg": "/stitch/static/media/vx.a8c2799b.svg",
+    "static/media/x.svg": "/stitch/static/media/x.4fd9859e.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.a1e2fac2.js",
-    "static/js/2.778af241.chunk.js",
-    "static/css/main.5a9dce71.chunk.css",
-    "static/js/main.b0038f26.chunk.js"
+    "static/js/2.ef7f0391.chunk.js",
+    "static/css/main.5c3508c9.chunk.css",
+    "static/js/main.48673c7f.chunk.js"
   ]
 }
