@@ -1,6 +1,6 @@
 export const paths: { [key: string]: { [key: string]: { path: number[][], symbol: number[][] } } } =
     {
-        '3qx': {
+        'qx3': {
             'tltrbr': {path: [[1, 0], [1, 1], [0.75, 1], [0, .25], [0, 0]], symbol: [[.75, .5]]},
             'bltltr': {path: [[0, 0], [1, 0], [1, .25], [.25, 1], [0, 1]], symbol: [[.4, .5]]},
             'tlblbr': {path: [[0, 1], [0, 0], [.25, 0], [1, .75], [1, 1]], symbol: [[.25, .75]]},

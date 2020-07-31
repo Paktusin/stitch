@@ -6,7 +6,7 @@ export interface Stitch {
     symbol: SymbolType;
 }
 
-export const stitchTypes = ['x', 'vx', 'hx', 'sx', 'qx', '3qx', '\\', '/']
+export const stitchTypes = ['x', 'vx', 'hx', 'sx', 'qx', 'qx3', '\\', '/']
 
 export type StitchType = typeof stitchTypes[number]
 

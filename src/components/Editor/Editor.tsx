@@ -78,7 +78,7 @@ export const Editor = () => {
             case 'qx':
                 directions = [clickDirection];
                 break;
-            case '3qx':
+            case 'qx3':
                 const foundKey = keys.find(key => (key.match(regexp) as any)[1] === clickDirection) as string;
                 directions = foundKey.match(regexp);
                 break;

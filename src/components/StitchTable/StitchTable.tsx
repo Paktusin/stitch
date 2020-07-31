@@ -10,7 +10,7 @@ export interface StitchTableProps {
 export const StitchTable: FunctionComponent<StitchTableProps> = ({symbols, palette}) => {
 
     return (
-        <table>
+        <table className="table table-bordered">
             <thead>
             <tr>
                 <th>Sym</th>

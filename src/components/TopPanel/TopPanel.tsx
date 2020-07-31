@@ -6,6 +6,7 @@ import {ViewToolBar} from "../ViewToolBar/ViewToolBar";
 import {BackToolBar, BackToolBarType} from "../BackPanel/BackToolBar";
 import {Button, ButtonGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import qx3 from '../../assets/qx3.svg';
 
 export type TopPanelType = {} & BackToolBarType
 
@@ -22,7 +23,7 @@ export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor, projec
                             active={type === stitchType}
                             key={index}
                             onClick={() => setStitchType(type)}>
-                        {type}
+                        <img src={qx3}/>
                     </Button>
                 )}
             </ButtonGroup>

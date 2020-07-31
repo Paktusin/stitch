@@ -39,7 +39,18 @@ export const Print = () => {
     return (
         <div className="Print">
             <div className="Paper">
+                <h3>X stitches</h3>
                 <StitchTable palette={project.palette} symbols={xStitches}/>
+
+                {!!backStitches.length && [
+                    <h3>Back stitches</h3>,
+                    <StitchTable palette={project.palette} symbols={backStitches}/>
+                ]}
+
+                {!!halfStitch.length && [
+                    <h3>Half stitches</h3>,
+                    <StitchTable palette={project.palette} symbols={halfStitch}/>
+                ]}
             </div>
         </div>
     )
