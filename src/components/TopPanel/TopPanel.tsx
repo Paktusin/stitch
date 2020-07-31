@@ -7,6 +7,12 @@ import {BackToolBar, BackToolBarType} from "../BackPanel/BackToolBar";
 import {Button, ButtonGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import qx3 from '../../assets/qx3.svg';
+import sx from '../../assets/sx.svg';
+import half from '../../assets/half.svg';
+import x from '../../assets/x.svg';
+import qx from '../../assets/qx.svg';
+import vx from '../../assets/vx.svg';
+import hx from '../../assets/hx.svg';
 
 export type TopPanelType = {} & BackToolBarType
 
@@ -23,7 +29,14 @@ export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor, projec
                             active={type === stitchType}
                             key={index}
                             onClick={() => setStitchType(type)}>
-                        <img src={qx3}/>
+                        {type === 'qx3' && <img src={qx3}/>}
+                        {type === 'sx' && <img src={sx}/>}
+                        {type === 'x' && <img src={x}/>}
+                        {type === 'qx' && <img src={qx}/>}
+                        {type === 'vx' && <img src={vx}/>}
+                        {type === 'hx' && <img src={hx}/>}
+                        {type === '\\' && <img src={half}/>}
+                        {type === '/' && <img src={half} style={{transform:'rotate(90deg)'}}/>}
                     </Button>
                 )}
             </ButtonGroup>
