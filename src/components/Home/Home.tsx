@@ -13,7 +13,8 @@ export function Home() {
         projectService.list().then(setProjects)
     }, [])
 
-    function deleteHandler(index: number) {
+    function deleteHandler(index: number, event: any) {
+        event.preventDefault();
         if (window.confirm('Do you want to delete this project ?')) {
             projectService.delete(projects[index]).then(() => {
                 const newProjects = [...projects];
@@ -37,9 +38,10 @@ export function Home() {
                                 <span
                                     className="small text-black-50">createdAt: {createdAtDate.toLocaleString()}</span><br/>
                                 <span className="small text-black-50">updatedAt: {updatedAtDate.toLocaleString()}</span>
-                                <Button onClick={() => deleteHandler(index)} size={'sm'} className={'del-btn'}
+                                <Button onClick={(event: any) => deleteHandler(index, event)} size={'sm'}
+                                        className={'del-btn'}
                                         variant={"danger"}
-                                        title={'delete'}>x</Button>
+                                        title={'delete'}>delete</Button>
                             </Link>
                         )
                     })}
