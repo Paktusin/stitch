@@ -1,8 +1,8 @@
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import './Editor.scss';
 import {GridType, Project} from "../../types/project";
 import {Canvas} from "../Canvas/Canvas";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {projectService} from "../../services/dataService";
 import {StoreContext} from "../Store";
 import {LeftPanel} from "../RightPanel/LeftPanel";
@@ -17,7 +17,8 @@ export const Editor = () => {
     const {id} = useParams();
     const history = useHistory();
     const {symbol, stitchType} = useContext(StoreContext);
-
+    const [steps, setSteps] = useState<Project[]>([]);
+    const [step, setStep] = useState<number>(-1);
 
     function deleteThreadHandler(symbol: SymbolType) {
         if (project) {
@@ -63,6 +64,10 @@ export const Editor = () => {
         setProject({...project, color} as Project)
     }
 
+    function stepHandler(step: number) {
+
+    }
+
     const newCell = useCallback((symbol: SymbolType, clickDirection: Direction, cell: Cell): Cell => {
         const keys = Object.keys(paths[stitchType]);
         const regexp = /.{1,2}/g;
@@ -89,10 +94,9 @@ export const Editor = () => {
                 break;
         }
         const newStitch: Stitch = {symbol, type: stitchType, directions};
-        const newCell = [...cell.filter(stitch => {
+        return [...cell.filter(stitch => {
             return !stitch.directions.filter(direction => directions.find((newDirection: Direction) => newDirection === direction)).length
         }), newStitch];
-        return newCell;
     }, [stitchType])
 
     useEffect(() => {
@@ -106,7 +110,11 @@ export const Editor = () => {
     }, [])
 
     useEffect(() => {
-        if (project) projectService.save(project).then(() => console.log('saved'))
+        if (project) {
+            projectService.save(project).then(() => console.log('saved'));
+            setSteps([...steps.slice(0, step), {...project} as Project]);
+            setStep(steps.length);
+        }
     }, [project])
 
     if (!project) return null;
