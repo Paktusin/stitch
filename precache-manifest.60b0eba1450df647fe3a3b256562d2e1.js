@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "22cdd10116eb675a199c109da9bfc4eb",
+    "revision": "1878f0ee4ee6bb95ff39b06cfd47d2a4",
     "url": "/stitch/index.html"
   },
   {
-    "revision": "41f4c8eb74cbeb699b95",
-    "url": "/stitch/static/css/main.a994ac4f.chunk.css"
+    "revision": "0819f55b8cb67828ddd6",
+    "url": "/stitch/static/css/main.67b61ae8.chunk.css"
   },
   {
-    "revision": "6b65005c726800de6ad5",
-    "url": "/stitch/static/js/2.ea3c40d3.chunk.js"
+    "revision": "9e86e59e279a6db9eb1b",
+    "url": "/stitch/static/js/2.566b3bc3.chunk.js"
   },
   {
     "revision": "3453b8997016469371284a28c0e873e2",
-    "url": "/stitch/static/js/2.ea3c40d3.chunk.js.LICENSE.txt"
+    "url": "/stitch/static/js/2.566b3bc3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "41f4c8eb74cbeb699b95",
-    "url": "/stitch/static/js/main.7665ec36.chunk.js"
+    "revision": "0819f55b8cb67828ddd6",
+    "url": "/stitch/static/js/main.174dc6f3.chunk.js"
   },
   {
     "revision": "62424200748dac8f01dd",
