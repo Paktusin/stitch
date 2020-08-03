@@ -1,6 +1,10 @@
 .print {
   background-color: #e7e7e7;
 
+  @media print {
+    background-color: transparent;
+  }
+
   .paper {
     width: 21cm;
     margin: 0 auto;
