@@ -104,17 +104,37 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     function drawStitch(ctx: CanvasRenderingContext2D, x: number, y: number, stitch: Stitch, color: string) {
         if (!images) return;
-        if (imageMap.has(color)) {
-            ctx.drawImage(imageMap.get(color) as HTMLImageElement, x, y, cellSize, cellSize);
+        const imgKey = color + stitch.type;
+        if (imageMap.has(imgKey)) {
+            drawStitchImage(ctx, imageMap.get(imgKey) as HTMLImageElement, x, y, stitch)
         } else {
             const svgEl = images[stitch.type].data.replace(/#fff/g, color);
             const image = new Image();
             image.src = 'data:image/svg+xml;base64,' + btoa(svgEl);
             image.onload = () => {
-                imageMap.set(color, image);
-                ctx.drawImage(image, x, y, cellSize, cellSize)
+                imageMap.set(imgKey, image);
+                drawStitchImage(ctx, image, x, y, stitch)
             };
         }
+    }
+
+    function drawStitchImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, stitch: Stitch) {
+        let height = cellSize;
+        let width = cellSize;
+        if (stitch.type === 'hx') {
+            height = cellSize / 2;
+            if (stitch.directions.join('') === 'brbl') {
+                y = y + cellSize / 2;
+            }
+        }
+
+        if (stitch.type === 'vx') {
+            width = cellSize / 2;
+            if (stitch.directions.join('') === 'trbr') {
+                x = x + cellSize / 2;
+            }
+        }
+        ctx.drawImage(image, x, y, width, height);
     }
 
     function drawSymbol(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, symbol: string) {
