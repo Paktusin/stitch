@@ -5,9 +5,15 @@
     background-color: transparent;
   }
 
+  .Panel{
+    top:0;
+    position: fixed;
+  }
+
   .paper {
     width: 21cm;
     margin: 0 auto;
+    padding-top: 40px;
 
     .page {
       page-break-inside: avoid;

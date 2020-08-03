@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import './Print.scss'
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {projectService} from "../../services/dataService";
 import {Project} from "../../types/project";
 import {Cell} from "../../types/cell";
@@ -8,6 +8,7 @@ import {StitchTable} from "../StitchTable/StitchTable";
 import {Zoom} from "../../types/zoom";
 import {Canvas, CELL_SIZE} from "../Canvas/Canvas";
 import {Child} from "../Child";
+import {Panel} from "../Panel/Panel";
 
 export const Print = () => {
     const {id} = useParams();
@@ -56,10 +57,11 @@ export const Print = () => {
         )
     }
 
-    console.log(staticZoom.scale, pageRef.current.offsetHeight);
-
     return (
         <div className="print">
+            <Panel>
+                <Link className={"m-auto btn btn-primary btn-sm"} to={`/draw/${project?.id}`}>Edit</Link>
+            </Panel>
             <div className="paper">
                 <div className="page">
                     <div ref={pageRef}>

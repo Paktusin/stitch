@@ -42,7 +42,7 @@ export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor, projec
                          onChangeColor={onChangeColor}
                          onChangePicture={onChangePicture}/>
             <Link className={"ml-1 btn btn-primary btn-sm"}
-                  to={`/print/${project.id}`} target={'_blank'}>Print</Link>
+                  to={`/print/${project.id}`}>Print</Link>
             <Link className={"ml-auto btn btn-primary btn-sm"}
                   to={`/`}>Home</Link>
         </Panel>
