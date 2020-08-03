@@ -42,7 +42,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     const {setZoom} = useContext(DispatchContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
-    const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
+    const stitchCanvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
+    const backCanvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
     const [images, setImages] = useState<StitchImages>()
 
     const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale]);
@@ -66,7 +67,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
 
     function resize() {
-        const parent = ref.current.parentElement;
+        const parent = stitchCanvasRef.current.parentElement;
         if (parent) {
             setSize({height: parent.offsetHeight, width: parent.offsetWidth})
         }
@@ -74,7 +75,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     function emitCell(pageX: number, pageY: number) {
         if (mouseButton === undefined) return;
-        const refRect = ref.current.getBoundingClientRect();
+        const refRect = stitchCanvasRef.current.getBoundingClientRect();
         const cellX = (pageX - refRect.left + zoom.scrollX) / cellSize
         const rowY = (pageY - refRect.top + zoom.scrollY) / cellSize
         const cellIndex = Math.floor(cellX);
@@ -159,16 +160,19 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function drawCells(ctx: CanvasRenderingContext2D) {
+        clear(ctx);
         Object.keys(grid).forEach((rowIndex: any) => {
             Object.keys(grid[rowIndex]).forEach((colIndex: any) => {
                 const cell = grid[rowIndex][colIndex];
                 drawCell(ctx, cell, colIndex, rowIndex);
             })
         })
+        if (view === 'grid' || print) drawGrid(ctx);
     }
 
     function drawBackGround(ctx: CanvasRenderingContext2D) {
         if (print) return;
+        clear(ctx);
         ctx.fillStyle = 'white';
         ctx.fillRect(scrolledX(0), scrolledY(0), project.width * cellSize, project.height * cellSize);
         if (view === 'aida' || view === 'count') {
@@ -188,6 +192,11 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
         ctx.fillStyle = `${project.color}88`;
         ctx.fillRect(scrolledX(0), scrolledY(0), project.width * cellSize, project.height * cellSize);
+        drawPicture(ctx);
+    }
+
+    function clear(ctx:CanvasRenderingContext2D) {
+        ctx.clearRect(0, 0, size.width, size.height);
     }
 
     function drawGrid(ctx: CanvasRenderingContext2D) {
@@ -233,17 +242,10 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function drawAll() {
-        const ctx = getCtx();
-        ctx.clearRect(0, 0, size.width, size.height);
-        drawBackGround(ctx);
-        drawPicture(ctx);
-        drawCells(ctx);
-        if (view === 'grid' || print) drawGrid(ctx);
-    }
-
-    function getCtx(): CanvasRenderingContext2D {
-        // @ts-ignore
-        return ref.current.getContext('2d');
+        const stitchCtx = stitchCanvasRef.current.getContext('2d') as CanvasRenderingContext2D;
+        const backCtx = backCanvasRef.current.getContext('2d') as CanvasRenderingContext2D;
+        drawBackGround(backCtx);
+        drawCells(stitchCtx);
     }
 
     function wheel(e: React.WheelEvent<HTMLCanvasElement>) {
@@ -332,6 +334,10 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                     size={cellSize * project.height - size.height}/>}
             <div className="scrollContainer">
                 <div className="canvasContainer">
+                    <canvas height={size.height}
+                            width={size.width}
+                            ref={backCanvasRef}
+                            className="Canvas"/>
                     <canvas onWheel={wheel}
                             onContextMenu={e => e.preventDefault()}
                             onMouseMove={mouseMoveHandler}
@@ -339,8 +345,9 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                             onMouseUp={mouseDownHandler}
                             height={size.height}
                             width={size.width}
-                            ref={ref}
+                            ref={stitchCanvasRef}
                             className="Canvas"/>
+
                 </div>
                 {!staticZoom && <Scroll scroll={zoom.scrollX} onScroll={e => scrollHandler(true, e)}
                                         size={cellSize * project.width - size.width}

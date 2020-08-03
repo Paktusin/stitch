@@ -13,9 +13,12 @@
     display: flex;
     flex: 1 auto;
     overflow: hidden;
+    background-color: $panelBackground;
 
     .Canvas {
-      background-color: $panelBackground;
+      position: absolute;
+      left: 0;
+      top: 0;
     }
   }
 }
