@@ -1,29 +1,29 @@
 {
   "files": {
-    "main.css": "/stitch/static/css/main.5c3508c9.chunk.css",
-    "main.js": "/stitch/static/js/main.48673c7f.chunk.js",
-    "main.js.map": "/stitch/static/js/main.48673c7f.chunk.js.map",
+    "main.css": "/stitch/static/css/main.a994ac4f.chunk.css",
+    "main.js": "/stitch/static/js/main.7665ec36.chunk.js",
+    "main.js.map": "/stitch/static/js/main.7665ec36.chunk.js.map",
     "runtime-main.js": "/stitch/static/js/runtime-main.a1e2fac2.js",
     "runtime-main.js.map": "/stitch/static/js/runtime-main.a1e2fac2.js.map",
-    "static/js/2.ef7f0391.chunk.js": "/stitch/static/js/2.ef7f0391.chunk.js",
-    "static/js/2.ef7f0391.chunk.js.map": "/stitch/static/js/2.ef7f0391.chunk.js.map",
+    "static/js/2.ea3c40d3.chunk.js": "/stitch/static/js/2.ea3c40d3.chunk.js",
+    "static/js/2.ea3c40d3.chunk.js.map": "/stitch/static/js/2.ea3c40d3.chunk.js.map",
     "index.html": "/stitch/index.html",
-    "precache-manifest.d99315f17127067f756d01d477c041ce.js": "/stitch/precache-manifest.d99315f17127067f756d01d477c041ce.js",
+    "precache-manifest.a299ec6b6ff0de213f7d7e410dadd680.js": "/stitch/precache-manifest.a299ec6b6ff0de213f7d7e410dadd680.js",
     "service-worker.js": "/stitch/service-worker.js",
-    "static/css/main.5c3508c9.chunk.css.map": "/stitch/static/css/main.5c3508c9.chunk.css.map",
-    "static/js/2.ef7f0391.chunk.js.LICENSE.txt": "/stitch/static/js/2.ef7f0391.chunk.js.LICENSE.txt",
-    "static/media/half.svg": "/stitch/static/media/half.38cce50b.svg",
-    "static/media/hx.svg": "/stitch/static/media/hx.184f0745.svg",
-    "static/media/qx.svg": "/stitch/static/media/qx.cfab1280.svg",
-    "static/media/qx3.svg": "/stitch/static/media/qx3.8a80f529.svg",
-    "static/media/sx.svg": "/stitch/static/media/sx.efdbea92.svg",
-    "static/media/vx.svg": "/stitch/static/media/vx.a8c2799b.svg",
-    "static/media/x.svg": "/stitch/static/media/x.4fd9859e.svg"
+    "static/css/main.a994ac4f.chunk.css.map": "/stitch/static/css/main.a994ac4f.chunk.css.map",
+    "static/js/2.ea3c40d3.chunk.js.LICENSE.txt": "/stitch/static/js/2.ea3c40d3.chunk.js.LICENSE.txt",
+    "static/media/half.svg": "/stitch/static/media/half.048357d9.svg",
+    "static/media/hx.svg": "/stitch/static/media/hx.46641971.svg",
+    "static/media/qx.svg": "/stitch/static/media/qx.8a9c1c2b.svg",
+    "static/media/qx3.svg": "/stitch/static/media/qx3.47a633fb.svg",
+    "static/media/sx.svg": "/stitch/static/media/sx.63f4a945.svg",
+    "static/media/vx.svg": "/stitch/static/media/vx.55d7242b.svg",
+    "static/media/x.svg": "/stitch/static/media/x.94ebad85.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.a1e2fac2.js",
-    "static/js/2.ef7f0391.chunk.js",
-    "static/css/main.5c3508c9.chunk.css",
-    "static/js/main.48673c7f.chunk.js"
+    "static/js/2.ea3c40d3.chunk.js",
+    "static/css/main.a994ac4f.chunk.css",
+    "static/js/main.7665ec36.chunk.js"
   ]
 }
