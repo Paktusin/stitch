@@ -17,6 +17,7 @@ import {Project} from "../../types/project";
 import {Scroll} from "../Scroll/Scroll";
 import {Child} from "../Child";
 import {paths} from "../../types/paths";
+import {getStitchImagesData, StitchImages} from "../../services/stitchImages";
 
 export interface CanvasPropsType {
     project: Project;
@@ -25,6 +26,8 @@ export interface CanvasPropsType {
 
 export const CELL_SIZE = 4;
 let mouseButton: any;
+let imageMap = new Map<string, HTMLImageElement>();
+
 
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
@@ -34,6 +37,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     const {setZoom} = useContext(DispatchContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
+    const [images, setImages] = useState<StitchImages>()
 
     const zoomed = useCallback((number: number) => Math.floor(number * zoom.scale), [zoom.scale]);
     const scrolledX = useCallback((number: number) => Math.floor(number - zoom.scrollX), [zoom.scrollX]);
@@ -84,14 +88,33 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         }
         cell.forEach(stitch => {
             const color = palette[stitch.symbol].color;
-            const contrastColor = colorService.strRgbContrast(color);
-            ctx.fillStyle = color;
-            ctx.fill(get2DPath(zX, zY, stitch));
-            const symbolPosArr = paths[stitch.type][stitch.directions.join('')].symbol;
-            symbolPosArr.forEach(symbolPos => {
-                drawSymbol(ctx, zX + cellSize * symbolPos[0], zY + cellSize * symbolPos[1], contrastColor, stitch.symbol);
-            })
+            if (showSymbols) {
+                const contrastColor = colorService.strRgbContrast(color);
+                const symbolPosArr = paths[stitch.type][stitch.directions.join('')].symbol;
+                ctx.fillStyle = color;
+                ctx.fill(get2DPath(zX, zY, stitch));
+                symbolPosArr.forEach(symbolPos => {
+                    drawSymbol(ctx, zX + cellSize * symbolPos[0], zY + cellSize * symbolPos[1], contrastColor, stitch.symbol);
+                })
+            } else {
+                drawStitch(ctx, zX, zY, stitch, color);
+            }
         })
+    }
+
+    function drawStitch(ctx: CanvasRenderingContext2D, x: number, y: number, stitch: Stitch, color: string) {
+        if (!images) return;
+        if (imageMap.has(color)) {
+            ctx.drawImage(imageMap.get(color) as HTMLImageElement, x, y, cellSize, cellSize);
+        } else {
+            const svgEl = images[stitch.type].data.replace(/#fff/g, color);
+            const image = new Image();
+            image.src = 'data:image/svg+xml;base64,' + btoa(svgEl);
+            image.onload = () => {
+                imageMap.set(color, image);
+                ctx.drawImage(image, x, y, cellSize, cellSize)
+            };
+        }
     }
 
     function drawSymbol(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, symbol: string) {
@@ -246,11 +269,15 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     useEffect(() => {
         resize();
+        getStitchImagesData().then(data => {
+            setImages(data);
+            resize();
+        })
     }, []);
 
     useEffect(() => {
         drawAll();
-    }, [project, size, zoom, view]);
+    }, [project, size, zoom, view, showSymbols]);
 
     useEffect(() => {
         window.addEventListener('resize', resize);

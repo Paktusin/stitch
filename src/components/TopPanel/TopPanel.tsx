@@ -6,7 +6,7 @@ import {ViewToolBar} from "../ViewToolBar/ViewToolBar";
 import {BackToolBar, BackToolBarType} from "../BackPanel/BackToolBar";
 import {Button, ButtonGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {getSvg} from "../../services/getSvg";
+import {getStitchImage} from "../../services/stitchImages";
 
 
 export type TopPanelType = {} & BackToolBarType
@@ -20,7 +20,7 @@ export const TopPanel: FunctionComponent<TopPanelType> = ({onChangeColor, projec
         <Panel>
             <ButtonGroup className={"mr-1"}>
                 {stitchTypes.map((type, index) => {
-                        const svg = getSvg(type);
+                        const svg = getStitchImage(type);
                         return (
                             <Button size={"sm"}
                                     active={type === stitchType}
