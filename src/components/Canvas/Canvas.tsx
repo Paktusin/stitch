@@ -23,6 +23,7 @@ export interface CanvasPropsType {
     project: Project;
     onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void,
     staticZoom?: Zoom
+    print?: boolean
 }
 
 export const CELL_SIZE = 4;
@@ -33,7 +34,8 @@ let wheelTimeOut: any;
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
                                                                onCellClick,
-                                                               staticZoom
+                                                               staticZoom,
+                                                               print
                                                            }) => {
     const {zoom: dynamicZoom, view, showSymbols} = useContext(StoreContext);
     const zoom = useMemo(() => staticZoom || dynamicZoom, [staticZoom, dynamicZoom]);
@@ -166,6 +168,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function drawBackGround(ctx: CanvasRenderingContext2D) {
+        if (print) return;
         ctx.fillStyle = 'white';
         ctx.fillRect(scrolledX(0), scrolledY(0), project.width * cellSize, project.height * cellSize);
         if (view === 'aida' || view === 'count') {
@@ -235,7 +238,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         drawBackGround(ctx);
         drawPicture(ctx);
         drawCells(ctx);
-        if (view === 'grid') drawGrid(ctx);
+        if (view === 'grid' || print) drawGrid(ctx);
     }
 
     function getCtx(): CanvasRenderingContext2D {

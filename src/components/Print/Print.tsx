@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
 import './Print.scss'
 import {Link, useParams} from "react-router-dom";
 import {projectService} from "../../services/dataService";
@@ -86,7 +86,7 @@ export const Print = () => {
                             width: staticZoom.scale * (range.x + xorNum) * CELL_SIZE,
                             height: staticZoom.scale * (range.y + xorNum) * CELL_SIZE,
                         }}>
-                            <Canvas project={project} staticZoom={{
+                            <Canvas print={true} project={project} staticZoom={{
                                 ...staticZoom,
                                 scrollX: part.x * CELL_SIZE * staticZoom.scale,
                                 scrollY: part.y * CELL_SIZE * staticZoom.scale,
