@@ -29,12 +29,18 @@ export const Print = () => {
         }
         return [Array.from(xStitches), Array.from(backStitches), Array.from(halfStitch)];
     }, [project]);
+    const partNum = 40;
+    const xorNum = 2;
 
     useEffect(() => {
         projectService.get(id).then(setProject);
     }, [])
 
     if (!project) return null;
+    const divider = partNum - xorNum
+    const parts = Array(Math.ceil(project.height / divider)).fill(null)
+        .reduce((prev, _, rowIndex) => prev.concat(Array(Math.ceil(project.width / divider)).fill(null)
+            .map((_, colIndex) => ({x: colIndex * divider, y: rowIndex * divider}))), [])
 
     return (
         <div className="Print">
