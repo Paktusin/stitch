@@ -1,13 +1,34 @@
-.Print {
+.print {
   background-color: #e7e7e7;
 
-  .Paper {
-    min-height: 100vh;
-    margin: 0 auto;
+  .paper {
     width: 21cm;
-    background-color: white;
-    padding: 1cm;
-    box-shadow: 0 0 15px rgba(0, 0, 0, .5);
+    margin: 0 auto;
+
+    .page {
+      page-break-inside: avoid;
+      display: block;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      background-color: white;
+      height: 27.9cm;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 0, 0, .5);
+      padding: 1cm;
+
+      > div {
+        width: 100%;
+        height: 100%;
+      }
+
+      .canvas {
+        margin: 0 auto;
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
 
     @media print {
       width: 100%;

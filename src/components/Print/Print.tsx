@@ -1,10 +1,13 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import './Print.scss'
 import {useParams} from "react-router-dom";
 import {projectService} from "../../services/dataService";
 import {Project} from "../../types/project";
 import {Cell} from "../../types/cell";
 import {StitchTable} from "../StitchTable/StitchTable";
+import {Zoom} from "../../types/zoom";
+import {Canvas, CELL_SIZE} from "../Canvas/Canvas";
+import {Child} from "../Child";
 
 export const Print = () => {
     const {id} = useParams();
@@ -29,34 +32,66 @@ export const Print = () => {
         }
         return [Array.from(xStitches), Array.from(backStitches), Array.from(halfStitch)];
     }, [project]);
-    const partNum = 40;
-    const xorNum = 2;
+    const [range, setRange] = useState({x: 40, y: 50});
+    const [xorNum, setXorNum] = useState(4);
+    const pageRef = useRef(document.createElement('div'));
 
     useEffect(() => {
         projectService.get(id).then(setProject);
     }, [])
 
-    if (!project) return null;
-    const divider = partNum - xorNum
-    const parts = Array(Math.ceil(project.height / divider)).fill(null)
-        .reduce((prev, _, rowIndex) => prev.concat(Array(Math.ceil(project.width / divider)).fill(null)
-            .map((_, colIndex) => ({x: colIndex * divider, y: rowIndex * divider}))), [])
+    const parts: { x: number, y: number }[] = useMemo(() => {
+        if (!project) return [];
+        return Array(Math.ceil(project.height / (range.y - xorNum))).fill(null)
+            .reduce((prev, _, rowIndex) => prev.concat(Array(Math.ceil(project.width / (range.x - xorNum))).fill(null)
+                .map((_, colIndex) => ({x: colIndex * (range.x - xorNum), y: rowIndex * (range.y - xorNum)}))), [])
+    }, [project]);
+
+    const staticZoom: Zoom = {
+        scrollX: 0,
+        scrollY: 0,
+        scale: Math.min(
+            Math.floor(pageRef.current.clientWidth / CELL_SIZE / (range.x + xorNum)),
+            Math.floor(pageRef.current.clientHeight / CELL_SIZE / (range.y + xorNum)),
+        )
+    }
+
+    console.log(staticZoom.scale, pageRef.current.offsetHeight);
 
     return (
-        <div className="Print">
-            <div className="Paper">
-                <h3>X stitches</h3>
-                <StitchTable palette={project.palette} symbols={xStitches}/>
-
-                {!!backStitches.length && [
-                    <h3>Back stitches</h3>,
-                    <StitchTable palette={project.palette} symbols={backStitches}/>
-                ]}
-
-                {!!halfStitch.length && [
-                    <h3>Half stitches</h3>,
-                    <StitchTable palette={project.palette} symbols={halfStitch}/>
-                ]}
+        <div className="print">
+            <div className="paper">
+                <div className="page">
+                    <div ref={pageRef}>
+                        {project &&
+                        <Child>
+                            <h3>X stitches</h3>
+                            <StitchTable palette={project.palette} symbols={xStitches}/>
+                            {!!backStitches.length && [
+                                <h3>Back stitches</h3>,
+                                <StitchTable palette={project.palette} symbols={backStitches}/>
+                            ]}
+                            {!!halfStitch.length && [
+                                <h3>Half stitches</h3>,
+                                <StitchTable palette={project.palette} symbols={halfStitch}/>
+                            ]}
+                        </Child>}
+                    </div>
+                </div>
+                {project && parts.map((part, index) =>
+                    <div key={index} className="page">
+                        <div className={'canvas'} style={{
+                            width: staticZoom.scale * (range.x + xorNum) * CELL_SIZE,
+                            height: staticZoom.scale * (range.y + xorNum) * CELL_SIZE,
+                        }}>
+                            <Canvas project={project} staticZoom={{
+                                ...staticZoom,
+                                scrollX: part.x * CELL_SIZE * staticZoom.scale,
+                                scrollY: part.y * CELL_SIZE * staticZoom.scale,
+                            }}/>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

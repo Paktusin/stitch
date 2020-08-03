@@ -11,7 +11,7 @@ import './Canvas.scss';
 import {Cell} from "../../types/cell";
 import {DispatchContext, StoreContext, StoreType} from "../Store";
 import {Direction, Stitch, StitchType} from "../../types/stitch";
-import {zoomSettings} from "../../types/zoom";
+import {Zoom, zoomSettings} from "../../types/zoom";
 import {colorService} from "../../services/colorService";
 import {Project} from "../../types/project";
 import {Scroll} from "../Scroll/Scroll";
@@ -21,19 +21,23 @@ import {getStitchImagesData, StitchImages} from "../../services/stitchImages";
 
 export interface CanvasPropsType {
     project: Project;
-    onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void
+    onCellClick?: (rowIndex: number, cellIndex: number, direction: Direction, contextMenu: boolean) => void,
+    staticZoom?: Zoom
 }
 
 export const CELL_SIZE = 4;
 let mouseButton: any;
 let imageMap = new Map<string, HTMLImageElement>();
-
+let wheelTimeOut: any;
 
 export const Canvas: FunctionComponent<CanvasPropsType> = ({
                                                                project,
-                                                               onCellClick
+                                                               onCellClick,
+                                                               staticZoom
                                                            }) => {
-    const {zoom, view, showSymbols} = useContext(StoreContext);
+    const {zoom: dynamicZoom, view, showSymbols} = useContext(StoreContext);
+    const zoom = useMemo(() => staticZoom || dynamicZoom, [staticZoom, dynamicZoom]);
+
     const {setZoom} = useContext(DispatchContext);
     const [size, setSize] = useState<{ height: number, width: number }>({height: 0, width: 0});
     const ref = useRef<HTMLCanvasElement>(document.createElement('canvas'));
@@ -58,7 +62,6 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         return null;
     }, [project.picture])
 
-    let wheelTimeOut: any;
 
     function resize() {
         const parent = ref.current.parentElement;
@@ -75,7 +78,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         const cellIndex = Math.floor(cellX);
         const rowIndex = Math.floor(rowY);
         const direction = (rowY - rowIndex > .5 ? 'b' : 't') + (cellX - cellIndex > .5 ? 'r' : 'l') as Direction;
-        if (rowIndex <= project.height && cellIndex <= project.width) {
+        if (rowIndex < project.height && cellIndex < project.width) {
             onCellClick && onCellClick(rowIndex, cellIndex, direction, mouseButton === 2);
         }
     }
@@ -241,6 +244,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
     }
 
     function wheel(e: React.WheelEvent<HTMLCanvasElement>) {
+        if (staticZoom) return;
         clearTimeout(wheelTimeOut);
         const {shiftKey, altKey, deltaY} = e;
         wheelTimeOut = setTimeout(() => {
@@ -250,8 +254,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                 const newScale = (delta < 0 ? Math.min(zoomSettings.max, scale * zoomSettings.speed) : Math.max(zoomSettings.min, scale * (1 / zoomSettings.speed)));
                 if (newScale !== scale) {
                     setZoom({
-                        scrollX: 0,
-                        scrollY: 0,
+                        ...zoom,
                         scale: newScale,
                     });
                 }
@@ -322,8 +325,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
 
     return (
         <Child>
-            <Scroll scroll={zoom.scrollY} onScroll={e => scrollHandler(false, e)}
-                    size={cellSize * project.height - size.height}/>
+            {!staticZoom && <Scroll scroll={zoom.scrollY} onScroll={e => scrollHandler(false, e)}
+                                    size={cellSize * project.height - size.height}/>}
             <div className="scrollContainer">
                 <div className="canvasContainer">
                     <canvas onWheel={wheel}
@@ -336,9 +339,9 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                             ref={ref}
                             className="Canvas"/>
                 </div>
-                <Scroll scroll={zoom.scrollX} onScroll={e => scrollHandler(true, e)}
-                        size={cellSize * project.width - size.width}
-                        horizontal={true}/>
+                {!staticZoom && <Scroll scroll={zoom.scrollX} onScroll={e => scrollHandler(true, e)}
+                                        size={cellSize * project.width - size.width}
+                                        horizontal={true}/>}
             </div>
         </Child>
     )
