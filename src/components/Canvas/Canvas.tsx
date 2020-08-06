@@ -181,6 +181,8 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
                 let j = 0;
                 while (j < project.width) {
                     ctx.drawImage(view === 'aida' ? aidaImgEl : counterImgEl,
+                        0, 0,
+                        24, 24,
                         scrolledX(j * cellSize),
                         scrolledY(i * cellSize),
                         cellSize,
@@ -195,7 +197,7 @@ export const Canvas: FunctionComponent<CanvasPropsType> = ({
         drawPicture(ctx);
     }
 
-    function clear(ctx:CanvasRenderingContext2D) {
+    function clear(ctx: CanvasRenderingContext2D) {
         ctx.clearRect(0, 0, size.width, size.height);
     }
 
