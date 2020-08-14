@@ -3,6 +3,8 @@ import {Thread, vendors} from "../../types/thread";
 import cls from 'classnames';
 import './PaletteEdit.scss';
 import {colorService} from "../../services/colorService";
+import {Button, ButtonGroup, FormControl, FormGroup, FormLabel} from "react-bootstrap";
+import {InputGroupText} from "react-bootstrap/InputGroup";
 
 export interface PaletteEditType {
     thread?: Thread,
@@ -30,7 +32,7 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
         }, [thread])
 
         function deleteHandler() {
-            if (window.confirm('Do you really want to delete thread from project?')) {
+            if (window.confirm('Do you really want to clear thread from project?')) {
                 onDelete && onDelete();
             }
         }
@@ -40,14 +42,18 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
         return (
             <div className="PaletteEdit">
                 <hr/>
-                <label>Vendor</label>
-                <select value={vendor} onChange={e => setVendor(e.target.value)}>
-                    {Object.keys(vendors).map(vendor =>
-                        <option key={vendor} value={vendor}>{vendor}</option>)}
-                </select>
+                <FormGroup>
+                    <FormLabel>Vendor</FormLabel>
+                    <FormControl as="select"  value={vendor} onChange={e => setVendor(e.target.value)}>
+                        {Object.keys(vendors).map(vendor => <option key={vendor} value={vendor}>{vendor}</option>)}
+                    </FormControl>
+                </FormGroup>
                 <hr/>
-                <label>Threads</label>
-                <input placeholder='search code...' value={search} onChange={e => setSearch(e.target.value)}/>
+
+                <FormGroup>
+                    <FormLabel>Threads</FormLabel>
+                    <FormControl type={'text'} placeholder={'search code...'}  value={search} onChange={e => setSearch(e.target.value)}/>
+                </FormGroup>
                 <div className="threadContainer">
                     {threads.map((thread, key) => {
                             const color = colorService.strRgbContrast(thread.color);
@@ -69,9 +75,10 @@ export const PaletteEdit: FunctionComponent<PaletteEditType> =
                     )}
                 </div>
                 <hr/>
-                <button onClick={e => onSave && onSave(selectedThread)}>Save</button>
-                <button onClick={e => onCancel && onCancel()}>Cancel</button>
-                <button onClick={deleteHandler}>Delete</button>
+                <Button className={'mr-1'} onClick={() => onSave && onSave(selectedThread)}>Save</Button>
+                <Button className={'mr-1'} onClick={() => onCancel && onCancel()}>Cancel</Button>
+                {thread && <Button className={'mr-1'} onClick={deleteHandler}>Clear</Button>}
+
             </div>
         )
     }

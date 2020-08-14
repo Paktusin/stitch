@@ -32,9 +32,9 @@ export const Store = ({children}: any) => {
         ...initialState,
         zoom: localStorageService.get('zoom', initialState.zoom),
         view: localStorageService.get('view', initialState.view),
-        stitchType: localStorageService.get('stitchType',initialState.stitchType),
+        stitchType: localStorageService.get('stitchType', initialState.stitchType),
         symbol: localStorageService.get('symbol', initialState.symbol),
-        showSymbols: localStorageService.get('showSymbols', initialState.showSymbols),
+        showSymbols: true,//localStorageService.get('showSymbols', initialState.showSymbols),
     });
     const actionList = React.useMemo(() => ({
         setZoom: (value: Zoom) => dispatch({type: actionTypes.SET_ZOOM, value}),
