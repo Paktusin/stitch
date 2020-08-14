@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {projectService} from "../../services/dataService";
 import {Project} from "../../types/project";
 import {Link} from "react-router-dom";
 import './Home.scss';
-import {Button, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Button, ButtonGroup, ListGroup, ListGroupItem} from "react-bootstrap";
+import {fileService} from "../../services/fileService";
 
 export function Home() {
 
@@ -24,6 +25,19 @@ export function Home() {
         }
     }
 
+    function exportHandler(index: number, event: any) {
+        event.preventDefault();
+        fileService.exportProject(projects[index]);
+    }
+
+    function importHandler() {
+        fileService.importProject().then(res => {
+            projectService.save(res).then(() => {
+                setProjects([...projects, res]);
+            });
+        })
+    }
+
     return (
         <div className="home">
             <div className="projects">
@@ -32,22 +46,29 @@ export function Home() {
                         const createdAtDate = new Date(project.createdAt);
                         const updatedAtDate = new Date(project.updatedAt);
                         return (
-                            <Link className={'list-group-item text-decoration-none'} to={`/draw/${project.id}`}
-                                  key={index}>
+                            <ListGroupItem key={index}>
                                 <div>{project.name}</div>
                                 <span
                                     className="small text-black-50">createdAt: {createdAtDate.toLocaleString()}</span><br/>
-                                <span className="small text-black-50">updatedAt: {updatedAtDate.toLocaleString()}</span>
-                                <Button onClick={(event: any) => deleteHandler(index, event)} size={'sm'}
-                                        className={'del-btn'}
-                                        variant={"danger"}
-                                        title={'delete'}>delete</Button>
-                            </Link>
+                                <span
+                                    className="small text-black-50 mt-0">updatedAt: {updatedAtDate.toLocaleString()}</span>
+                                <ButtonGroup className={'actions'}>
+                                    <Link to={`/draw/${project.id}`} component={Button} className="btn-sm">
+                                        open
+                                    </Link>
+                                    <Button onClick={(event: any) => exportHandler(index, event)}
+                                            size={'sm'}>export</Button>
+                                    <Button onClick={(event: any) => deleteHandler(index, event)} size={'sm'}
+                                            variant={"danger"}
+                                            title={'delete'}>delete</Button>
+                                </ButtonGroup>
+                            </ListGroupItem>
                         )
                     })}
-                    <Link className={'list-group-item text-decoration-none'} to={`/edit`}>
-                        <div>create new</div>
-                    </Link>
+                    <ListGroupItem>
+                        <Link to={`/edit`} component={Button} className={'btn-success mr-1'}>Create</Link>
+                        <Button onClick={importHandler}>Import</Button>
+                    </ListGroupItem>
                 </ListGroup>
             </div>
         </div>
